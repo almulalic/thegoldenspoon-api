@@ -1,18 +1,31 @@
 const express = require("express");
-const usersRouter = express.Router();
+const identitiyRouter = express.Router();
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const authorize = require("../../Shared/auth-middleware");
+const config = require("../../Shared/config");
 
+identitiyRouter.use(cors());
 var InventoryService = require("../../Services/IdentityService");
-// const Service = require("../../Service/UserService");
 
-usersRouter.use(cors());
-
-usersRouter.post("/register", (req, res) => {
+identitiyRouter.post("/register", (req, res) => {
   InventoryService.RegisterUser(req.body, res);
 });
 
-usersRouter.post("/login", (req, res) => {
+identitiyRouter.post("/login", (req, res) => {
   InventoryService.LoginUser(req.body, res);
 });
 
-module.exports = usersRouter;
+identitiyRouter.post("/testToken", authorize(), (req, res) => {
+  jwt.verify(req.token, config.secretKey, (err, authData) => {
+    res.send({ message: "Successfuly tested", authData: authData });
+  });
+});
+
+identitiyRouter.post("/testAdminToken", authorize("role:read"), (req, res) => {
+  jwt.verify(req.token, config.secretKey, (err, authData) => {
+    res.send({ message: "Successfuly tested", authData: authData });
+  });
+});
+
+module.exports = identitiyRouter;
