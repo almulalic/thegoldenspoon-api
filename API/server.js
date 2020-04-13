@@ -21,7 +21,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const IdentitiesController = require("./Controllers/IdentityController");
 
 // ACCESS POINTS
-app.use("/users", IdentitiesController);
+app.use("/identity", IdentitiesController);
 
 app.listen(port, () => {
   console.log("Server is running on port: " + port);
