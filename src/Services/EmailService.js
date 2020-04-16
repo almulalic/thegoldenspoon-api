@@ -62,6 +62,24 @@ class EmailService {
         return 1;
       });
   };
+
+  static SendGenericEmail = async (body) => {
+    transport
+      .sendMail({
+        from: body.from,
+        to: body.to,
+        subject: body.subject,
+        html: body.html,
+      })
+      .then(() => {
+        console.log("Email Sent");
+        return 0;
+      })
+      .catch((err) => {
+        console.log("Email Not sent" + err);
+        return 1;
+      });
+  };
 }
 
 module.exports = EmailService;
