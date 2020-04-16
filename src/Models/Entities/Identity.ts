@@ -1,7 +1,8 @@
-const Sequelize = require("sequelize");
-const db = require("../Database/db");
+import db from "../../Database/DbModel";
 
-const IdentityDTO = db.sequelize.define(
+const Sequelize = require("sequelize");
+
+const Identity = db.sequelize.define(
   "identity",
   {
     Id: {
@@ -26,4 +27,4 @@ const IdentityDTO = db.sequelize.define(
   }
 );
 
-module.exports = IdentityDTO;
+export default Identity;

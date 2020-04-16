@@ -1,9 +1,9 @@
+import db from "../../Database/DbModel";
+import Identity from "./Identity";
+
 const Sequelize = require("sequelize");
-const db = require("../Database/db");
 
-const IdentityDTO = require("./IdentityDTO");
-
-const UserDTO = db.sequelize.define(
+const User = db.sequelize.define(
   "user",
   {
     Id: {
@@ -52,6 +52,6 @@ const UserDTO = db.sequelize.define(
   }
 );
 
-UserDTO.belongsTo(IdentityDTO);
+User.belongsTo(Identity);
 
-module.exports = UserDTO;
+export default User;

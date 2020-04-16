@@ -1,13 +1,13 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+import { EmailService } from "../EmailServices/EmailService";
+import Identity from "../../Models/Entities/Identity";
+import User from "../../Models/Entities/User";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 require("dotenv").config();
 
-var UserDTO = require("../Models/UserDTO");
-var IdentityDTO = require("../Models/IdentityDTO");
+const Op = require("Sequelize").Op;
 
-var EmailService = require("./EmailService");
-
-class IdentitiesService {
+export class IdentityService {
   static RegisterUser = (body, res) => {
     const userData = {
       FirstName: body.firstName,
@@ -24,19 +24,24 @@ class IdentitiesService {
       Password: body.password,
     };
 
-    IdentityDTO.findOne({
+    Identity.findOne({
       where: {
-        email: body.email,
+        [Op.or]: [
+          {
+            email: body.email,
+          },
+          { username: body.username },
+        ],
       },
     })
       .then((user) => {
         if (!user) {
           bcrypt.hash(body.password, 10, (err, hash) => {
             userIdentityData.Password = hash;
-            IdentityDTO.create(userIdentityData)
-              .then((identityResponse) => {
+            Identity.create(userIdentityData)
+              .then((identityResponse: any) => {
                 userData.IdentityId = identityResponse.dataValues.Id;
-                UserDTO.create(userData)
+                User.create(userData)
                   .then(() => {
                     const confirmationEmailSuccess = EmailService.SendConfirmationEmail(
                       userData.IdentityId,
@@ -55,7 +60,7 @@ class IdentitiesService {
                     }
                   })
                   .catch((err) => {
-                    IdentityDTO.findOne({
+                    Identity.findOne({
                       where: { Id: userData.IdentityId },
                     })
                       .then((tempIdentity) => {
@@ -81,7 +86,7 @@ class IdentitiesService {
   };
 
   static ResendConfirmation = (body, res) => {
-    IdentityDTO.findOne({
+    User.findOne({
       where: {
         email: body.email,
       },
@@ -112,21 +117,21 @@ class IdentitiesService {
   };
 
   static ChangeConfirmationEmail = (body, res) => {
-    UserDTO.findOne({
-      include: [{ model: IdentityDTO, where: { username: body.username } }],
+    User.findOne({
+      include: [{ include: [Identity], where: { username: body.username } }],
     })
       .then((userDataResponse) => {
         if (userDataResponse) {
           if (
             bcrypt.compareSync(
               body.password,
-              userDataResponse.identity.Password
+              userDataResponse.Identity.Password
             )
           ) {
             if (userDataResponse.IsConfirmed)
               return res.json({ status: "User is already confirmed" });
 
-            IdentityDTO.update(
+            Identity.update(
               { Email: body.newEmail },
               { where: { Id: userDataResponse.IdentityId } }
             )
@@ -151,13 +156,13 @@ class IdentitiesService {
   static ConfirmUser = (token, res) => {
     const decodedToken = jwt.verify(token, process.env.EMAIL_SECRET);
 
-    UserDTO.findOne({
+    User.findOne({
       where: { identityId: decodedToken.userIdentityId },
     })
       .then((user) => {
         if (user.IsConfirmed) res.send({ message: "User already confirmed" });
         else {
-          UserDTO.update(
+          User.update(
             { IsConfirmed: 1 },
             { where: { IdentityId: user.IdentityId } }
           )
@@ -175,16 +180,22 @@ class IdentitiesService {
   };
 
   static LoginUser = (body, res) => {
-    UserDTO.findOne({
-      include: [{ model: IdentityDTO, where: { email: body.email } }],
+    User.findOne({
+      include: [
+        {
+          model: Identity,
+          $or: [{ email: body.email }, { username: body.email }],
+        },
+      ],
     })
       .then((userResponse) => {
+        console.log(body);
         if (userResponse) {
           if (!userResponse.IsConfirmed)
             throw new Error("Confirm the account first.");
 
           if (
-            bcrypt.compareSync(body.password, userResponse.identity.Password)
+            bcrypt.compareSync(body.password, userResponse.Identity.Password)
           ) {
             let token = jwt.sign(
               userResponse.dataValues,
@@ -206,5 +217,3 @@ class IdentitiesService {
       });
   };
 }
-
-module.exports = IdentitiesService;
