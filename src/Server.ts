@@ -1,12 +1,12 @@
 // GLOBAL IMPORT
-
-var express = require("express");
-var cors = require("cors");
-var bodyParser = require("body-parser");
-
-const swaggerUi = require("swagger-ui-express");
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import swaggerUi from "swagger-ui-express";
 // const swaggerDocument = require("../swagger.ts");
 
+// CONTROLLERS IMPORT
+import IdentityController from "./API/Controllers/IdentityController";
 // INITIAL DEFINITION
 const app = express();
 const port = process.env.PORT || 5000;
@@ -17,11 +17,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// CONTROLLERS IMPORT
-const IdentitiesController = require("./API/Controllers/IdentityController");
-
 // ACCESS POINTS
-app.use("/identity", IdentitiesController);
+app.use("/identity", IdentityController);
 
 app.listen(port, () => {
   console.log("Server is running on port: " + port);

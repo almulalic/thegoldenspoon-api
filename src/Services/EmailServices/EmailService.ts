@@ -8,7 +8,7 @@ const transport = nodemailer.createTransport(
   nodemailerSendgrid({ apiKey: process.env.SENDGRID_API_KEY })
 );
 
-class EmailService {
+export class EmailService {
   static SendConfirmationEmail = async (id, body) => {
     const confirmationToken = jwt.sign(
       { userIdentityId: id },
@@ -81,5 +81,3 @@ class EmailService {
       });
   };
 }
-
-module.exports = EmailService;

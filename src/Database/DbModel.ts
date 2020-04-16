@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
-const db = {};
+const db = {} as any;
 
-const sequelize = new Sequelize("goldspoon", "goldspoon", "ys63w447YHvOlWq4", {
+let sequelize = new Sequelize("goldspoon", "goldspoon", "ys63w447YHvOlWq4", {
   host: "localhost",
   dialect: "mysql",
   operatorsAliases: 0,
@@ -16,4 +16,4 @@ const sequelize = new Sequelize("goldspoon", "goldspoon", "ys63w447YHvOlWq4", {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;
