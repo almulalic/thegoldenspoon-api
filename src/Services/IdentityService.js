@@ -4,6 +4,7 @@ require("dotenv").config();
 
 var UserDTO = require("../Models/UserDTO");
 var IdentityDTO = require("../Models/IdentityDTO");
+
 var EmailService = require("./EmailService");
 
 class IdentitiesService {
@@ -85,13 +86,13 @@ class IdentitiesService {
         email: body.email,
       },
     })
-      .then((userData) => {
-        if (userData) {
-          if (userData.IsConfirmed)
+      .then((userDataResponse) => {
+        if (userDataResponse) {
+          if (userDataResponse.IsConfirmed)
             return res.json({ status: "User is already confirmed" });
 
           const confirmationEmailSuccess = EmailService.ResendConfirmationEmail(
-            userData
+            userDataResponse
           );
           if (confirmationEmailSuccess)
             return res.json({
@@ -107,6 +108,43 @@ class IdentitiesService {
       })
       .catch((err) => {
         res.send({ error: "User not found" });
+      });
+  };
+
+  static ChangeConfirmationEmail = (body, res) => {
+    UserDTO.findOne({
+      include: [{ model: IdentityDTO, where: { username: body.username } }],
+    })
+      .then((userDataResponse) => {
+        if (userDataResponse) {
+          if (
+            bcrypt.compareSync(
+              body.password,
+              userDataResponse.identity.Password
+            )
+          ) {
+            if (userDataResponse.IsConfirmed)
+              return res.json({ status: "User is already confirmed" });
+
+            IdentityDTO.update(
+              { Email: body.newEmail },
+              { where: { Id: userDataResponse.IdentityId } }
+            )
+              .then((novi) => {
+                res.sendStatus(200);
+              })
+              .catch(() => {
+                res.sendStatus(400);
+              });
+          } else {
+            res.status(400).json({ error: "Login data not correct" });
+          }
+        } else {
+          res.status(400).json({ error: "User dont not exist" });
+        }
+      })
+      .catch((err) => {
+        res.status(400).json({ error: err.message });
       });
   };
 

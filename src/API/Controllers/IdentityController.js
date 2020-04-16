@@ -19,6 +19,10 @@ identitiyRouter.post("/confirmation/resend", (req, res) => {
   InventoryService.ResendConfirmation(req.body, res);
 });
 
+identitiyRouter.post("/confirmation/resetEmail", (req, res) => {
+  InventoryService.ChangeConfirmationEmail(req.body, res);
+});
+
 identitiyRouter.get("/confirmation/:token", (req, res) => {
   InventoryService.ConfirmUser(req.params.token, res);
 });
