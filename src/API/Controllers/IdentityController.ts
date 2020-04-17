@@ -1,4 +1,4 @@
-import { IdentityService } from "../../Services/IdentityServices/IdentityService";
+import { IdentityServices } from "../../Services/IdentityServices/IdentityServices";
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
@@ -9,23 +9,23 @@ const IdentityController = express.Router();
 IdentityController.use(cors());
 
 IdentityController.post("/register", (req, res) => {
-  IdentityService.RegisterUser(req.body, res);
+  IdentityServices.RegisterUser(req.body, res);
 });
 
 IdentityController.post("/login", (req, res) => {
-  IdentityService.LoginUser(req.body, res);
+  IdentityServices.LoginUser(req.body, res);
 });
 
 IdentityController.post("/confirmation/resend", (req, res) => {
-  IdentityService.ResendConfirmation(req.body, res);
+  IdentityServices.ResendConfirmation(req.body, res);
 });
 
 IdentityController.post("/confirmation/resetEmail", (req, res) => {
-  IdentityService.ChangeConfirmationEmail(req.body, res);
+  IdentityServices.ChangeConfirmationEmail(req.body, res);
 });
 
 IdentityController.get("/confirmation/:token", (req, res) => {
-  IdentityService.ConfirmUser(req.params.token, res);
+  IdentityServices.ConfirmUser(req.params.token, res);
 });
 
 IdentityController.post("/testToken", Auth.Authorize(), (req: any, res) => {
