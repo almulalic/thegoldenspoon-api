@@ -7,6 +7,7 @@ import swaggerUi from "swagger-ui-express";
 
 // CONTROLLERS IMPORT
 import IdentityController from "./API/Controllers/IdentityController";
+
 // INITIAL DEFINITION
 const app = express();
 const port = process.env.PORT || 5000;

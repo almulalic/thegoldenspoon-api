@@ -3,12 +3,34 @@ import Identity from "../../Models/Entities/Identity";
 import User from "../../Models/Entities/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { Op } from "sequelize";
+import {
+  RegisterUserDTO,
+  ResendConfirmationDTO,
+  ChangeConfirmationEmail,
+  ConfirmUserDTO,
+  LoginDTO,
+} from "./DTO/index";
+
 require("dotenv").config();
 
-const Op = require("Sequelize").Op;
+export interface IIdentityServices {
+  RegisterUser(body: RegisterUserDTO, res: Response): any;
+  ResendConfirmation(body: ResendConfirmationDTO, res: Response): any;
+  ChangeConfirmationEmail(body: ChangeConfirmationEmail, res: any): any;
+  ConfirmUser(token: ConfirmUserDTO, res: Response): any;
+  LoginUser(body: LoginDTO, res: Response): any;
+}
 
-export class IdentityService {
-  static RegisterUser = (body, res) => {
+enum RegisterEnums {
+  NotUniqueUser = 1,
+  RegisteredNeedsConfirmation = 2,
+  RegisteredConfirmationFailed = 3,
+  InternalServerError = 4,
+}
+
+export class IdentityServices implements IIdentityServices {
+  static RegisterUser = (body: RegisterUserDTO, res) => {
     const userData = {
       FirstName: body.firstName,
       LastName: body.lastName,
@@ -50,12 +72,11 @@ export class IdentityService {
 
                     if (confirmationEmailSuccess)
                       return res.json({
-                        status: "Successfully registered,needs confirmation",
+                        status: RegisterEnums.RegisteredNeedsConfirmation,
                       });
                     else {
                       return res.json({
-                        status:
-                          "Successfully registered but failed to generate confirmation token",
+                        status: RegisterEnums.RegisteredConfirmationFailed,
                       });
                     }
                   })
@@ -65,23 +86,35 @@ export class IdentityService {
                     })
                       .then((tempIdentity) => {
                         tempIdentity.destroy();
-                        return res.send("error: " + err.message);
+                        console.log(tempIdentity);
+                        return res.sendStatus(400)({
+                          status: RegisterEnums.InternalServerError,
+                        });
                       })
                       .catch((err) => {
-                        return res.send("error: " + err.message);
+                        console.log(err);
+                        return res.sendStatus(400)({
+                          status: RegisterEnums.InternalServerError,
+                        });
                       });
                   });
               })
               .catch((err) => {
-                return res.send("error: " + err.message);
+                console.log(err);
+                return res.sendStatus(400)({
+                  status: RegisterEnums.InternalServerError,
+                });
               });
           });
         } else {
-          return res.json({ error: "User already exist" });
+          return res.json({ status: RegisterEnums.NotUniqueUser });
         }
       })
       .catch((err) => {
-        return res.send("error " + err.message);
+        console.log(err);
+        return res.sendStatus(400)({
+          status: RegisterEnums.InternalServerError,
+        });
       });
   };
 
