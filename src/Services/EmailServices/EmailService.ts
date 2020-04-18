@@ -38,7 +38,7 @@ export class EmailService {
 
   static ResendConfirmationEmail = async (userData) => {
     const confirmationToken = jwt.sign(
-      { userIdentityId: userData.Id },
+      { userIdentityId: userData.id },
       process.env.EMAIL_SECRET,
       {
         expiresIn: "1d",
@@ -49,7 +49,7 @@ export class EmailService {
     transport
       .sendMail({
         from: "almir.mulalic@tayra.io",
-        to: userData.Email,
+        to: userData.email,
         subject: "Confirmation email for the golden spoon platform",
         html: `Hi there! You requestd reconfirmation. Please click this link to confirm your email <a href="${url}">${url}</a>`,
       })

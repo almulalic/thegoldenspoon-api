@@ -2,35 +2,32 @@ import db from "../../Database/DbModel";
 
 const Sequelize = require("sequelize");
 
-const Identity = db.sequelize.define(
-  "identity",
+const RestaurantCategory = db.sequelize.define(
+  "restaurantcategory",
   {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    username: {
+    name: {
       type: Sequelize.STRING,
     },
-    email: {
-      type: Sequelize.STRING,
+    created: {
+      type: Sequelize.DATE,
     },
-    password: {
-      type: Sequelize.STRING,
-    },
-    isConfirmed: {
-      type: Sequelize.BOOLEAN,
-    },
-    confirmedAt: {
+    lastModified: {
       type: Sequelize.DATE,
     },
   },
   {
     timestamps: 0,
-    tableName: "identity",
+    tableName: "restaurantcategory",
     freezeTableName: true,
   }
 );
 
-export default Identity;
+// Restaurant.belongsTo(RestaurantSubcategory);
+// Restaurant.belongsTo(RestaurantCategory);
+
+export default RestaurantCategory;
