@@ -41,9 +41,6 @@ const User = db.sequelize.define(
     LastModified: {
       type: Sequelize.NOW,
     },
-    IsConfirmed: {
-      type: Sequelize.BOOLEAN,
-    },
   },
   {
     timestamps: 0,

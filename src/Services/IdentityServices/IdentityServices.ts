@@ -11,6 +11,13 @@ import {
   ConfirmUserDTO,
   LoginDTO,
 } from "./DTO/index";
+import {
+  ResendConfirmationEnums,
+  ChangeConfirmationEnums,
+  RegisterEnums,
+  ConfirmationEnums,
+  LoginEnums,
+} from "./Enums";
 
 require("dotenv").config();
 
@@ -22,14 +29,7 @@ export interface IIdentityServices {
   LoginUser(body: LoginDTO, res: Response): any;
 }
 
-enum RegisterEnums {
-  NotUniqueUser = 1,
-  RegisteredNeedsConfirmation = 2,
-  RegisteredConfirmationFailed = 3,
-  InternalServerError = 4,
-}
-
-export class IdentityServices implements IIdentityServices {
+export class IdentityServices {
   static RegisterUser = (body: RegisterUserDTO, res) => {
     const userData = {
       FirstName: body.firstName,
@@ -38,12 +38,12 @@ export class IdentityServices implements IIdentityServices {
       IdentityId: null,
       Role: body.role,
       Created: new Date(),
-      IsConfirmed: 0,
     };
     const userIdentityData = {
       Email: body.email,
       Username: body.username,
       Password: body.password,
+      IsConfirmed: 0,
     };
 
     Identity.findOne({
@@ -81,6 +81,7 @@ export class IdentityServices implements IIdentityServices {
                     }
                   })
                   .catch((err) => {
+                    console.log(err);
                     Identity.findOne({
                       where: { Id: userData.IdentityId },
                     })
@@ -119,134 +120,134 @@ export class IdentityServices implements IIdentityServices {
   };
 
   static ResendConfirmation = (body, res) => {
-    User.findOne({
+    Identity.findOne({
       where: {
         email: body.email,
       },
     })
-      .then((userDataResponse) => {
-        if (userDataResponse) {
-          if (userDataResponse.IsConfirmed)
-            return res.json({ status: "User is already confirmed" });
+      .then((identityResponse) => {
+        if (identityResponse) {
+          if (identityResponse.IsConfirmed)
+            return res.json(ResendConfirmationEnums.UserAlreadyConfirmed);
 
           const confirmationEmailSuccess = EmailService.ResendConfirmationEmail(
-            userDataResponse
+            identityResponse
           );
           if (confirmationEmailSuccess)
-            return res.json({
-              status: "Confirmation email successfully sent!",
-            });
-          else
-            return res.json({
-              status: "Failed to generate new token",
-            });
+            return res.json(
+              ResendConfirmationEnums.ConfirmationEmailSentSuccessfully
+            );
+          else return res.json(ResendConfirmationEnums.FailedToGenerateToken);
         } else {
-          return res.json({ error: "User already exist" });
+          return res.json(ResendConfirmationEnums.UserNotFound);
         }
       })
       .catch((err) => {
-        res.send({ error: "User not found" });
+        console.log(err);
+        return res.json(ResendConfirmationEnums.InternalServerError);
       });
   };
 
   static ChangeConfirmationEmail = (body, res) => {
-    User.findOne({
-      include: [{ include: [Identity], where: { username: body.username } }],
+    Identity.findOne({
+      where: { username: body.username },
     })
-      .then((userDataResponse) => {
-        if (userDataResponse) {
-          if (
-            bcrypt.compareSync(
-              body.password,
-              userDataResponse.Identity.Password
-            )
-          ) {
-            if (userDataResponse.IsConfirmed)
-              return res.json({ status: "User is already confirmed" });
+      .then((identityResponse) => {
+        if (identityResponse) {
+          if (bcrypt.compareSync(body.password, identityResponse.Password)) {
+            if (identityResponse.IsConfirmed)
+              return res.json(ChangeConfirmationEnums.UserAlreadyConfirmed);
+            else if (identityResponse.Email == body.newEmail)
+              return res.json(ChangeConfirmationEnums.EmailMustBeNew);
 
             Identity.update(
               { Email: body.newEmail },
-              { where: { Id: userDataResponse.IdentityId } }
+              { where: { Id: identityResponse.Id } }
             )
-              .then((novi) => {
-                res.sendStatus(200);
+              .then(() => {
+                return res.json(
+                  ChangeConfirmationEnums.ConfirmationEmailSentSuccessfully
+                );
               })
-              .catch(() => {
-                res.sendStatus(400);
+              .catch((err) => {
+                console.log(err);
+                return res.json(ChangeConfirmationEnums.InternalServerError);
               });
           } else {
-            res.status(400).json({ error: "Login data not correct" });
+            return res.json(ChangeConfirmationEnums.LoginDataNotValid);
           }
         } else {
-          res.status(400).json({ error: "User dont not exist" });
+          return res.json(ChangeConfirmationEnums.UserNotFound);
         }
       })
       .catch((err) => {
-        res.status(400).json({ error: err.message });
+        console.log(err);
+        return res.json(ChangeConfirmationEnums.UserNotFound);
       });
   };
 
   static ConfirmUser = (token, res) => {
     const decodedToken = jwt.verify(token, process.env.EMAIL_SECRET);
 
-    User.findOne({
-      where: { identityId: decodedToken.userIdentityId },
+    Identity.findOne({
+      where: { Id: decodedToken.userIdentityId },
     })
-      .then((user) => {
-        if (user.IsConfirmed) res.send({ message: "User already confirmed" });
+      .then((identityResponse) => {
+        if (identityResponse.IsConfirmed)
+          return res.json(ConfirmationEnums.UserAlreadyConfirmed);
         else {
-          User.update(
-            { IsConfirmed: 1 },
-            { where: { IdentityId: user.IdentityId } }
+          Identity.update(
+            { IsConfirmed: 1, ConfirmedAt: new Date() },
+            { where: { Id: identityResponse.Id } }
           )
             .then(() => {
-              res.send({ message: "User successfully confirmed" });
+              return res.json(ConfirmationEnums.UserSuccessfullyConfirmed);
             })
-            .catch(() => {
-              res.send({ message: "Error occured" });
+            .catch((err) => {
+              console.log(err);
+              return res.json(ConfirmationEnums.InternalServerError);
             });
         }
       })
       .catch((err) => {
-        res.send({ error: "Confirmation token rejected" });
+        console.log(err);
+        return res.json(ConfirmationEnums.ConfirmationTokenRejected);
       });
   };
 
   static LoginUser = (body, res) => {
-    User.findOne({
-      include: [
-        {
-          model: Identity,
-          $or: [{ email: body.email }, { username: body.email }],
-        },
-      ],
+    Identity.findOne({
+      where: { [Op.or]: [{ email: body.email }, { username: body.email }] },
     })
-      .then((userResponse) => {
-        console.log(body);
-        if (userResponse) {
-          if (!userResponse.IsConfirmed)
-            throw new Error("Confirm the account first.");
+      .then((identityResponse) => {
+        if (identityResponse) {
+          if (!identityResponse.IsConfirmed)
+            return res.json(LoginEnums.AccountNotConfirmed);
 
           if (
-            bcrypt.compareSync(body.password, userResponse.Identity.Password)
+            bcrypt.compareSync(
+              body.password,
+              identityResponse.dataValues.Password
+            )
           ) {
             let token = jwt.sign(
-              userResponse.dataValues,
+              identityResponse.dataValues,
               process.env.JWT_SECRET,
               {
                 expiresIn: "30m",
               }
             );
-            res.send(token);
+            return res.send(token);
           } else {
-            res.status(400).json({ error: "Login data not correct" });
+            return res.json(LoginEnums.LoginDataNotValid);
           }
         } else {
-          res.status(400).json({ error: "User dont not exist" });
+          return res.json(LoginEnums.UserDontExist);
         }
       })
       .catch((err) => {
-        res.status(400).json({ error: err.message });
+        console.log(err);
+        return res.json(LoginEnums.InternalServerError);
       });
   };
 }

@@ -25,7 +25,7 @@ export class Auth {
           }
         });
       } else {
-        console.log(`JWT Error 2: ${err}`);
+        console.log(`JWT Error 2`);
         return res
           .status(401)
           .send("Error: Access denied! Please provide a valid token.");

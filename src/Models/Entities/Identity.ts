@@ -19,6 +19,12 @@ const Identity = db.sequelize.define(
     Password: {
       type: Sequelize.STRING,
     },
+    IsConfirmed: {
+      type: Sequelize.BOOLEAN,
+    },
+    ConfirmedAt: {
+      type: Sequelize.DATE,
+    },
   },
   {
     timestamps: 0,
