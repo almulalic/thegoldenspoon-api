@@ -6,39 +6,39 @@ const Sequelize = require("sequelize");
 const User = db.sequelize.define(
   "user",
   {
-    Id: {
+    id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    FirstName: {
+    firstName: {
       type: Sequelize.STRING,
     },
-    LastName: {
+    lastName: {
       type: Sequelize.STRING,
     },
-    BornOn: {
+    bornOn: {
       type: Sequelize.DATE,
     },
-    Country: {
+    country: {
       type: Sequelize.DATE,
     },
-    Adress: {
+    adress: {
       type: Sequelize.DATE,
     },
-    IdentityId: {
+    identityId: {
       type: Sequelize.INTEGER,
     },
-    Avatar: {
+    avatar: {
       type: Sequelize.STRING,
     },
-    Role: {
+    role: {
       type: Sequelize.INTEGER,
     },
-    Created: {
+    created: {
       type: Sequelize.DATE,
     },
-    LastModified: {
+    lastModified: {
       type: Sequelize.NOW,
     },
   },

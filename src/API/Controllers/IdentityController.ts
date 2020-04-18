@@ -1,8 +1,6 @@
 import { IdentityServices } from "../../Services/IdentityServices/IdentityServices";
 import express from "express";
 import cors from "cors";
-import jwt from "jsonwebtoken";
-import { Auth } from "../../Auth/Auth";
 
 const IdentityController = express.Router();
 
@@ -27,21 +25,5 @@ IdentityController.post("/confirmation/resetEmail", (req, res) => {
 IdentityController.get("/confirmation/:token", (req, res) => {
   IdentityServices.ConfirmUser(req.params.token, res);
 });
-
-IdentityController.post("/testToken", Auth.Authorize(), (req: any, res) => {
-  jwt.verify(req.token, process.env.secretKey, (err, authData) => {
-    res.send({ message: "Successfuly tested", authData: authData });
-  });
-});
-
-IdentityController.post(
-  "/testAdminToken",
-  Auth.Authorize("role:read"),
-  (req: any, res) => {
-    jwt.verify(req.token, process.env.secretKey, (err, authData) => {
-      res.send({ message: "Successfuly tested", authData: authData });
-    });
-  }
-);
 
 export default IdentityController;
