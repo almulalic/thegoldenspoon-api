@@ -1,10 +1,9 @@
-import cors from "cors";
 import jwt from "jsonwebtoken";
 
 require("dotenv").config();
 
 export class Auth {
-  static Authorize = (credentials = [] as any) => {
+  static Authorize = (credentials = []) => {
     return (req, res, next) => {
       const token = req.headers["authorization"];
 

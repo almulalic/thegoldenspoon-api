@@ -1,6 +1,6 @@
-const nodemailer = require("nodemailer");
-const nodemailerSendgrid = require("nodemailer-sendgrid");
-const jwt = require("jsonwebtoken");
+import nodemailer from "nodemailer";
+import nodemailerSendgrid from "nodemailer-sendgrid";
+import jwt from "jsonwebtoken";
 
 require("dotenv").config();
 
@@ -8,8 +8,14 @@ const transport = nodemailer.createTransport(
   nodemailerSendgrid({ apiKey: process.env.SENDGRID_API_KEY })
 );
 
-export class EmailService {
-  static SendConfirmationEmail = async (id, body) => {
+export interface IEmailService {
+  SendConfirmationEmail(id: number, body: any): void;
+  ResendConfirmationEmail(userData: any): void;
+  SendGenericEmail(body: any): void;
+}
+
+class EmailService implements IEmailService {
+  public SendConfirmationEmail = async (id, body) => {
     const confirmationToken = jwt.sign(
       { userIdentityId: id },
       process.env.EMAIL_SECRET,
@@ -36,7 +42,7 @@ export class EmailService {
       });
   };
 
-  static ResendConfirmationEmail = async (userData) => {
+  public ResendConfirmationEmail = async (userData) => {
     const confirmationToken = jwt.sign(
       { userIdentityId: userData.id },
       process.env.EMAIL_SECRET,
@@ -63,7 +69,7 @@ export class EmailService {
       });
   };
 
-  static SendGenericEmail = async (body) => {
+  public SendGenericEmail = async (body) => {
     transport
       .sendMail({
         from: body.from,
@@ -81,3 +87,5 @@ export class EmailService {
       });
   };
 }
+
+export default new EmailService();

@@ -1,16 +1,8 @@
-import { EmailService } from "../EmailServices/EmailService";
 import Identity from "../../Models/Entities/Identity";
 import User from "../../Models/Entities/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Op } from "sequelize";
-import {
-  RegisterUserDTO,
-  ResendConfirmationDTO,
-  ChangeConfirmationEmail,
-  ConfirmUserDTO,
-  LoginDTO,
-} from "./DTO/index";
 import {
   ResendConfirmationEnums,
   ChangeConfirmationEnums,
@@ -18,19 +10,20 @@ import {
   ConfirmationEnums,
   LoginEnums,
 } from "./Enums";
+import EmailService from "../EmailServices/EmailService";
 
 require("dotenv").config();
 
-export interface IIdentityServices {
-  RegisterUser(body: RegisterUserDTO, res: Response): any;
-  ResendConfirmation(body: ResendConfirmationDTO, res: Response): any;
-  ChangeConfirmationEmail(body: ChangeConfirmationEmail, res: any): any;
-  ConfirmUser(token: ConfirmUserDTO, res: Response): any;
-  LoginUser(body: LoginDTO, res: Response): any;
+export interface IIdentityService {
+  RegisterUser(body, res): any;
+  ResendConfirmation(body, res): any;
+  ChangeConfirmationEmail(body, res): any;
+  ConfirmUser(body, res): any;
+  LoginUser(body, res): any;
 }
 
-export class IdentityServices {
-  static RegisterUser = (body: RegisterUserDTO, res) => {
+class IdentityService implements IIdentityService {
+  public RegisterUser = (body: any, res: any) => {
     Identity.findOne({
       where: {
         [Op.or]: [
@@ -61,7 +54,7 @@ export class IdentityServices {
           bcrypt.hash(body.password, 10, (err, hash) => {
             userIdentityData.password = hash;
             Identity.create(userIdentityData)
-              .then((identityResponse: any) => {
+              .then((identityResponse) => {
                 userData.identityId = identityResponse.dataValues.Id;
                 User.create(userData)
                   .then(() => {
@@ -119,7 +112,7 @@ export class IdentityServices {
       });
   };
 
-  static ResendConfirmation = (body, res) => {
+  public ResendConfirmation = (body, res) => {
     Identity.findOne({
       where: {
         email: body.email,
@@ -148,7 +141,7 @@ export class IdentityServices {
       });
   };
 
-  static ChangeConfirmationEmail = (body, res) => {
+  public ChangeConfirmationEmail = (body, res) => {
     Identity.findOne({
       where: { username: body.username },
     })
@@ -186,7 +179,7 @@ export class IdentityServices {
       });
   };
 
-  static ConfirmUser = (token, res) => {
+  public ConfirmUser = (token, res) => {
     const decodedToken = jwt.verify(token, process.env.EMAIL_SECRET);
 
     Identity.findOne({
@@ -215,7 +208,7 @@ export class IdentityServices {
       });
   };
 
-  static LoginUser = (body, res) => {
+  public LoginUser = (body, res) => {
     Identity.findOne({
       where: { [Op.or]: [{ email: body.email }, { username: body.email }] },
     })
@@ -251,3 +244,5 @@ export class IdentityServices {
       });
   };
 }
+
+export default new IdentityService();
