@@ -11,6 +11,8 @@ import {
   LoginEnums,
 } from "./Enums";
 import EmailService from "../EmailServices/EmailService";
+import { ResetPasswordEnums } from "./Enums/ResetPasswordEnum";
+import { ResetPasswordConfirmations } from "./Enums/ResetPasswordConfirmations";
 
 require("dotenv").config();
 
@@ -20,19 +22,14 @@ export interface IIdentityService {
   ChangeConfirmationEmail(body, res): any;
   ConfirmUser(body, res): any;
   LoginUser(body, res): any;
+  ResetPasswordRequest?(body, res): any;
+  ResetPasswordConfim?(token, body, res): any;
 }
 
 class IdentityService implements IIdentityService {
   public RegisterUser = (body: any, res: any) => {
     Identity.findOne({
-      where: {
-        [Op.or]: [
-          {
-            email: body.email,
-          },
-          { username: body.username },
-        ],
-      },
+      where: { [Op.or]: [{ email: body.email }, { username: body.email }] },
     })
       .then((user) => {
         if (!user) {
@@ -114,9 +111,7 @@ class IdentityService implements IIdentityService {
 
   public ResendConfirmation = (body, res) => {
     Identity.findOne({
-      where: {
-        email: body.email,
-      },
+      where: { email: body.email },
     })
       .then((identityResponse) => {
         if (identityResponse) {
@@ -241,6 +236,65 @@ class IdentityService implements IIdentityService {
       .catch((err) => {
         console.log(err);
         return res.json(LoginEnums.InternalServerError);
+      });
+  };
+
+  public ResetPassword = (body, res) => {
+    Identity.findOne({
+      where: { [Op.or]: [{ email: body.email }, { username: body.email }] },
+    })
+      .then((identityResponse) => {
+        if (identityResponse) {
+          if (!identityResponse.isConfirmed)
+            return res.json(ResetPasswordEnums.UserNotConfirmed);
+
+          const confirmationEmailSuccess = EmailService.SendResetPasswordEmail(
+            identityResponse
+          );
+
+          if (confirmationEmailSuccess)
+            return res.json(
+              ResetPasswordEnums.ConfirmationEmailSentSuccessfully
+            );
+          else return res.json(ResetPasswordEnums.FailedToGenerateToken);
+        } else {
+          return res.json(ResetPasswordEnums.UserNotFound);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.json(ResetPasswordEnums.InternalServerError);
+      });
+  };
+
+  public ResetPasswordConfim = (token, body, res) => {
+    const decodedToken = jwt.verify(token, process.env.PASSWORD_RESET_SECRET);
+
+    Identity.findOne({
+      where: { id: decodedToken.userIdentityId },
+    })
+      .then((identityResponse) => {
+        bcrypt.hash(body.password, 10, (err, hash) => {
+          Identity.update(
+            { password: hash },
+            { where: { Id: identityResponse.id } }
+          )
+            .then(() => {
+              return res.json(
+                ResetPasswordConfirmations.PasswordSuccessfullyChanged
+              );
+            })
+            .catch((err) => {
+              console.log(err);
+              return res.json(
+                ResetPasswordConfirmations.ConfirmationTokenRejected
+              );
+            });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.json(ResetPasswordConfirmations.InternalServerError);
       });
   };
 }

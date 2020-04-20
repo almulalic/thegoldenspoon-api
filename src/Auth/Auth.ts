@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 
 require("dotenv").config();
 
-export class Auth {
-  static Authorize = (credentials = []) => {
+class Auth {
+  public Authorize = (credentials = []) => {
     return (req, res, next) => {
       const token = req.headers["authorization"];
 
@@ -32,3 +32,5 @@ export class Auth {
     };
   };
 }
+
+export default new Auth();
