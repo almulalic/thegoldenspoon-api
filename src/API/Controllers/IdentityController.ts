@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import IdentityService from "../../Services/IdentityServices/IdentityService";
+import Auth from "../../Auth/Auth";
 
 const IdentityController = express.Router();
 
@@ -24,6 +25,14 @@ IdentityController.post("/confirmation/resetEmail", (req, res) => {
 
 IdentityController.get("/confirmation/:token", (req, res) => {
   IdentityService.ConfirmUser(req.params.token, res);
+});
+
+IdentityController.post("/resetPassword", Auth.Authorize(), (req, res) => {
+  IdentityService.ResetPassword(req.body, res);
+});
+
+IdentityController.get("/resetPasswordConfirmation/:token", (req, res) => {
+  IdentityService.ResetPasswordConfim(req.params.token, req.body, res);
 });
 
 export default IdentityController;
