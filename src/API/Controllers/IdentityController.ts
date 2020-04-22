@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import IdentityService from "../../Services/IdentityServices/IdentityService";
+import IdentityService from "../../Services/IdentityService/IdentityService";
 import Auth from "../../Auth/Auth";
 
 const IdentityController = express.Router();

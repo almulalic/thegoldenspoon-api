@@ -1,13 +1,10 @@
-import nodemailer from "nodemailer";
-import nodemailerSendgrid from "nodemailer-sendgrid";
-import jwt from "jsonwebtoken";
 import { EmailEnums } from "./EmailEnums";
+import jwt from "jsonwebtoken";
+import sgMail from "@sendgrid/mail";
+
+sgMail.setApiKey(process.env.SENGRID_API_KEY);
 
 require("dotenv").config();
-
-const transport = nodemailer.createTransport(
-  nodemailerSendgrid({ apiKey: process.env.SENDGRID_API_KEY })
-);
 
 export interface IEmailService {
   SendConfirmationEmail(id: number, body: any): void;
@@ -27,10 +24,10 @@ class EmailService implements IEmailService {
     );
     const url = `http://localhost:3000/identity/confirmation/${confirmationToken}`;
 
-    transport
-      .sendMail({
-        from: "almir.mulalic@tayra.io",
+    sgMail
+      .send({
         to: body.email,
+        from: "no-reply@enviorment.live",
         subject: "Confirmation email for the golden spoon platform",
         html: `Hi ${body.firstName} ${body.lastName}! Please click this link to confirm your email <a href="${url}">${url}</a> <input value=${confirmationToken} />`,
       })
@@ -38,6 +35,7 @@ class EmailService implements IEmailService {
         return EmailEnums.EmailSentSuccessfully;
       })
       .catch((err) => {
+        console.log(err);
         return EmailEnums.EmailNotSent;
       });
   };
@@ -52,17 +50,18 @@ class EmailService implements IEmailService {
     );
     const url = `http://localhost:3000/identity/confirmation/${confirmationToken}`;
 
-    transport
-      .sendMail({
-        from: "almir.mulalic@tayra.io",
+    sgMail
+      .send({
         to: userData.email,
+        from: "no-reply@enviorment.live",
         subject: "Confirmation email for the golden spoon platform",
-        html: `Hi there! You requestd reconfirmation. Please click this link to confirm your email <a href="${url}">${url}</a>`,
+        html: `Hi there! You requested reconfirmation. Please click this link to confirm your email <a href="${url}">${url}</a>`,
       })
       .then(() => {
         return EmailEnums.EmailSentSuccessfully;
       })
       .catch((err) => {
+        console.log(err);
         return EmailEnums.EmailNotSent;
       });
   };
@@ -77,10 +76,10 @@ class EmailService implements IEmailService {
     );
     const url = `http://localhost:3000/identity/resetPasswordConfirmation/${confirmationToken}`;
 
-    transport
-      .sendMail({
-        from: "almir.mulalic@tayra.io",
+    sgMail
+      .send({
         to: userData.email,
+        from: "no-reply@enviorment.live",
         subject: "Reset password golden spoon",
         html: ` Please click this link to proceed to password reset <a href="${url}">${url}</a> <input value=${confirmationToken} />`,
       })
@@ -88,13 +87,14 @@ class EmailService implements IEmailService {
         return EmailEnums.EmailSentSuccessfully;
       })
       .catch((err) => {
+        console.log(err);
         return EmailEnums.EmailNotSent;
       });
   };
 
   public SendGenericEmail = async (body) => {
-    transport
-      .sendMail({
+    sgMail
+      .send({
         from: body.from,
         to: body.to,
         subject: body.subject,
@@ -104,6 +104,7 @@ class EmailService implements IEmailService {
         return EmailEnums.EmailSentSuccessfully;
       })
       .catch((err) => {
+        console.log(err);
         return EmailEnums.EmailNotSent;
       });
   };

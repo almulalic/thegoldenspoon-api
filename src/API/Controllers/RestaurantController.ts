@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import jwt from "jsonwebtoken";
 import Restaurant from "../../Models/Entities/Restaurant";
 import RestaurantCategory from "../../Models/Entities/RestaurantCategory";
 import RestaurantSubcategory from "../../Models/Entities/RestaurantSubcategory";

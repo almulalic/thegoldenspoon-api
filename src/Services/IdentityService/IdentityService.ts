@@ -52,7 +52,7 @@ class IdentityService implements IIdentityService {
             userIdentityData.password = hash;
             Identity.create(userIdentityData)
               .then((identityResponse) => {
-                userData.identityId = identityResponse.dataValues.Id;
+                userData.identityId = identityResponse.dataValues.id;
                 User.create(userData)
                   .then(() => {
                     const confirmationEmailSuccess = EmailService.SendConfirmationEmail(
@@ -73,18 +73,17 @@ class IdentityService implements IIdentityService {
                   .catch((err) => {
                     console.log(err);
                     Identity.findOne({
-                      where: { Id: userData.identityId },
+                      where: { id: userData.identityId },
                     })
                       .then((tempIdentity) => {
                         tempIdentity.destroy();
-                        console.log(tempIdentity);
                         return res.sendStatus(400)({
                           status: RegisterEnums.InternalServerError,
                         });
                       })
                       .catch((err) => {
                         console.log(err);
-                        return res.sendStatus(400)({
+                        return res.sendStatus(400).json({
                           status: RegisterEnums.InternalServerError,
                         });
                       });
@@ -92,7 +91,7 @@ class IdentityService implements IIdentityService {
               })
               .catch((err) => {
                 console.log(err);
-                return res.sendStatus(400)({
+                return res.json({
                   status: RegisterEnums.InternalServerError,
                 });
               });
@@ -103,7 +102,7 @@ class IdentityService implements IIdentityService {
       })
       .catch((err) => {
         console.log(err);
-        return res.sendStatus(400)({
+        return res.json({
           status: RegisterEnums.InternalServerError,
         });
       });
