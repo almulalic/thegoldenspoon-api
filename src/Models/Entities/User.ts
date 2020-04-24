@@ -1,9 +1,9 @@
 import db from "../../Database/DbModel";
-import Identity from "./Identity";
+import { Identity } from "./Identity";
 
 const Sequelize = require("sequelize");
 
-const User = db.sequelize.define(
+export const User = db.sequelize.define(
   "user",
   {
     id: {
@@ -49,6 +49,4 @@ const User = db.sequelize.define(
   }
 );
 
-User.belongsTo(Identity);
-
-export default User;
+User.belongsTo(Identity, { foreignKey: "userId" });

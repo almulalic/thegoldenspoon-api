@@ -1,5 +1,3 @@
-import Identity from "../../Models/Entities/Identity";
-import User from "../../Models/Entities/User";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Op } from "sequelize";
@@ -13,6 +11,7 @@ import {
 import EmailService from "../EmailServices/EmailService";
 import { ResetPasswordEnums } from "./Enums/ResetPasswordEnum";
 import { ResetPasswordConfirmations } from "./Enums/ResetPasswordConfirmations";
+import { Identity, User } from "../../Models/Entities";
 
 require("dotenv").config();
 
@@ -49,8 +48,10 @@ class IdentityService implements IIdentityService {
           };
 
           bcrypt.hash(body.password, 10, (err, hash) => {
-            userIdentityData.password = hash;
-            Identity.create(userIdentityData)
+            Identity.create({
+              ...userIdentityData,
+              password: hash,
+            })
               .then((identityResponse) => {
                 userData.identityId = identityResponse.dataValues.id;
                 User.create(userData)
@@ -174,32 +175,40 @@ class IdentityService implements IIdentityService {
   };
 
   public ConfirmUser = (token, res) => {
-    const decodedToken = jwt.verify(token, process.env.EMAIL_SECRET);
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, process.env.EMAIL_SECRET);
 
-    Identity.findOne({
-      where: { id: decodedToken.userIdentityId },
-    })
-      .then((identityResponse) => {
-        if (identityResponse.isConfirmed)
-          return res.json(ConfirmationEnums.UserAlreadyConfirmed);
-        else {
-          Identity.update(
-            { isConfirmed: 1, confirmedAt: new Date() },
-            { where: { Id: identityResponse.id } }
-          )
-            .then(() => {
-              return res.json(ConfirmationEnums.UserSuccessfullyConfirmed);
-            })
-            .catch((err) => {
-              console.log(err);
-              return res.json(ConfirmationEnums.InternalServerError);
-            });
-        }
+      Identity.findOne({
+        where: { id: decodedToken.userIdentityId },
       })
-      .catch((err) => {
-        console.log(err);
-        return res.json(ConfirmationEnums.ConfirmationTokenRejected);
-      });
+        .then((identityResponse) => {
+          if (identityResponse.isConfirmed) {
+            res.status(200);
+            return res.json(ConfirmationEnums.UserAlreadyConfirmed);
+          } else {
+            Identity.update(
+              { isConfirmed: 1, confirmedAt: new Date() },
+              { where: { Id: identityResponse.id } }
+            )
+              .then(() => {
+                res.status(200);
+                return res.json(ConfirmationEnums.UserSuccessfullyConfirmed);
+              })
+              .catch((err) => {
+                res.status(200);
+                return res.json(ConfirmationEnums.InternalServerError);
+              });
+          }
+        })
+        .catch((err) => {
+          res.status(200);
+          return res.json(ConfirmationEnums.ConfirmationTokenRejected);
+        });
+    } catch (err) {
+      res.status(200);
+      return res.json(ConfirmationEnums.TokenMalformed);
+    }
   };
 
   public LoginUser = (body, res) => {
@@ -224,16 +233,20 @@ class IdentityService implements IIdentityService {
                 expiresIn: "30min",
               }
             );
-            return res.send(token);
+            res.status(200);
+            return res.json({ token: token });
           } else {
+            res.status(200);
             return res.json(LoginEnums.LoginDataNotValid);
           }
         } else {
+          res.status(200);
           return res.json(LoginEnums.UserDontExist);
         }
       })
       .catch((err) => {
         console.log(err);
+        res.status(200);
         return res.json(LoginEnums.InternalServerError);
       });
   };
@@ -295,6 +308,22 @@ class IdentityService implements IIdentityService {
         console.log(err);
         return res.json(ResetPasswordConfirmations.InternalServerError);
       });
+  };
+
+  public IsUniqueEmail = (email, res) => {
+    Identity.findOne({ where: { email: email } }).then((IdentityResponse) => {
+      if (IdentityResponse) return res.json(0);
+      else return res.json(1);
+    });
+  };
+
+  public IsUniqueUsername = (username, res) => {
+    Identity.findOne({ where: { username: username } }).then(
+      (IdentityResponse) => {
+        if (IdentityResponse) return res.json(0);
+        else return res.json(1);
+      }
+    );
   };
 }
 

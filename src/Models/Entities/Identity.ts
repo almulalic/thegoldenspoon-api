@@ -2,7 +2,7 @@ import db from "../../Database/DbModel";
 
 const Sequelize = require("sequelize");
 
-const Identity = db.sequelize.define(
+export const Identity = db.sequelize.define(
   "identity",
   {
     id: {
@@ -32,5 +32,3 @@ const Identity = db.sequelize.define(
     freezeTableName: true,
   }
 );
-
-export default Identity;

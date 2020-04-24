@@ -2,7 +2,7 @@ import db from "../../Database/DbModel";
 
 const Sequelize = require("sequelize");
 
-const RestaurantCategory = db.sequelize.define(
+export const RestaurantCategory = db.sequelize.define(
   "restaurantcategory",
   {
     id: {
@@ -29,5 +29,3 @@ const RestaurantCategory = db.sequelize.define(
 
 // Restaurant.belongsTo(RestaurantSubcategory);
 // Restaurant.belongsTo(RestaurantCategory);
-
-export default RestaurantCategory;

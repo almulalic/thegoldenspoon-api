@@ -1,34 +1,38 @@
 import express from "express";
 import cors from "cors";
-import Restaurant from "../../Models/Entities/Restaurant";
-import RestaurantCategory from "../../Models/Entities/RestaurantCategory";
-import RestaurantSubcategory from "../../Models/Entities/RestaurantSubcategory";
 import Auth from "../../Auth/Auth";
+import RestaurantsService from "../../Services/RestaurantService/RestaurantsService";
 
 const RestaurantController = express.Router();
 
 RestaurantController.use(cors());
 
-RestaurantController.get("/fetchCategories", Auth.Authorize(), (req, res) => {
-  RestaurantCategory.findAll().then((resp) => {
-    res.json(resp);
-  });
+RestaurantController.get("/fetchCategories", (req, res) => {
+  RestaurantsService.FetchCategories(res);
 });
 
-RestaurantController.get(
-  "/fetchSubcategories",
+RestaurantController.get("/fetchExpandedCategories", (req, res) => {
+  RestaurantsService.FetchExpandedCategories(res);
+});
+
+RestaurantController.get("/fetchSubcategories", (req, res) => {
+  RestaurantsService.FetchSubcategires(res);
+});
+
+RestaurantController.get("/fetchRestaurants", (req, res) => {
+  RestaurantsService.FetchRestaurants(res);
+});
+
+RestaurantController.get("/fetchUserRecord/:id", (req, res) => {
+  RestaurantsService.FetchUserRecord(req.params.id, res);
+});
+
+RestaurantController.post(
+  "/createRestaurantRecord",
   Auth.Authorize(),
   (req, res) => {
-    RestaurantSubcategory.findAll().then((resp) => {
-      res.json(resp);
-    });
+    RestaurantsService.CreateRestaurantRecord(req.body, res);
   }
 );
-
-RestaurantController.get("/fetchRestaurants", Auth.Authorize(), (req, res) => {
-  Restaurant.findAll().then((resp) => {
-    res.json(resp);
-  });
-});
 
 export default RestaurantController;
