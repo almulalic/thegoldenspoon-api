@@ -7,7 +7,10 @@ import IdentityController from "./API/Controllers/IdentityController";
 import RestaurantController from "./API/Controllers/RestaurantController";
 
 const app = express();
-const port = process.env.PORT || 5000;
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = "5000";
+}
 
 app.use(bodyParser.json());
 app.use(cors());
