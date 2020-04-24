@@ -1,1 +1,1 @@
-web: ts-node-dev --respawn src/Server.ts
+web: ts-node src/Server.ts
