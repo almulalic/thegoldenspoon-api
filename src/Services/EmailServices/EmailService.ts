@@ -2,9 +2,9 @@ import { EmailEnums } from "./EmailEnums";
 import jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
 
-sgMail.setApiKey(process.env.SENGRID_API_KEY);
-
 require("dotenv").config();
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export interface IEmailService {
   SendConfirmationEmail(id: number, body: any): void;
@@ -22,7 +22,7 @@ class EmailService implements IEmailService {
         expiresIn: "1d",
       }
     );
-    const url = `http://localhost:3000/identity/confirmation/${confirmationToken}`;
+    const url = `http://localhost:3000/accountConfirmation/${confirmationToken}`;
 
     sgMail
       .send({
@@ -48,7 +48,7 @@ class EmailService implements IEmailService {
         expiresIn: "1d",
       }
     );
-    const url = `http://localhost:3000/identity/confirmation/${confirmationToken}`;
+    const url = `http://localhost:3000/accountConfirmation/${confirmationToken}`;
 
     sgMail
       .send({

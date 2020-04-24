@@ -35,4 +35,12 @@ IdentityController.get("/resetPasswordConfirmation/:token", (req, res) => {
   IdentityService.ResetPasswordConfim(req.params.token, req.body, res);
 });
 
+IdentityController.get("/isUniqueEmail/:email", (req, res) => {
+  IdentityService.IsUniqueEmail(req.params.email, res);
+});
+
+IdentityController.get("/isUniqueUsername/:username", (req, res) => {
+  IdentityService.IsUniqueUsername(req.params.username, res);
+});
+
 export default IdentityController;

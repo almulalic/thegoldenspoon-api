@@ -1,9 +1,9 @@
 import db from "../../Database/DbModel";
-import Restaurant from "./Restaurant";
+import { RestaurantCategory } from "./RestaurantCategory";
 
 const Sequelize = require("sequelize");
 
-const RestaurantSubcategory = db.sequelize.define(
+export const RestaurantSubcategory = db.sequelize.define(
   "restaurantsubcategory",
   {
     id: {
@@ -31,6 +31,4 @@ const RestaurantSubcategory = db.sequelize.define(
   }
 );
 
-// RestaurantSubcategory.belongsTo(Restaurant);
-
-export default RestaurantSubcategory;
+// RestaurantSubcategory.belongsTo(RestaurantCategory);
