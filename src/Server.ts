@@ -20,6 +20,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/identity", IdentityController);
 app.use("/restaurant", RestaurantController);
 
-app.listen(port, () => {
+app.listen(5000, () => {
   console.log("Server is running on port: " + port);
 });
