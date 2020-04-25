@@ -7,7 +7,7 @@ import IdentityController from "./API/Controllers/IdentityController";
 import RestaurantController from "./API/Controllers/RestaurantController";
 
 const app = express();
-let port = process.env.PORT ||;
+let port = process.env.PORT || 5000;
 
 require("dotenv").config();
 
