@@ -22,7 +22,8 @@ class EmailService implements IEmailService {
         expiresIn: "1d",
       }
     );
-    const url = `http://localhost:3000/accountConfirmation/${confirmationToken}`;
+    const url =
+      process.env.APP_URL + `/accountConfirmation/${confirmationToken}`;
 
     sgMail
       .send({
@@ -48,7 +49,8 @@ class EmailService implements IEmailService {
         expiresIn: "1d",
       }
     );
-    const url = `http://localhost:3000/accountConfirmation/${confirmationToken}`;
+    const url =
+      process.env.APP_URL + `/accountConfirmation/${confirmationToken}`;
 
     sgMail
       .send({
@@ -74,7 +76,9 @@ class EmailService implements IEmailService {
         expiresIn: "12h",
       }
     );
-    const url = `http://localhost:3000/identity/resetPasswordConfirmation/${confirmationToken}`;
+    const url =
+      process.env.APP_URL +
+      `/identity/resetPasswordConfirmation/${confirmationToken}`;
 
     sgMail
       .send({
