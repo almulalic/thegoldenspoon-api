@@ -11,6 +11,7 @@ let sequelize = new Sequelize(
     host: process.env.DATABASE_HOST,
     dialect: process.env.DATABASE_DIALECT,
     operatorsAliases: 0,
+    ssl: true,
     port: process.env.DATABASE_PORT,
     pool: {
       max: 5,
