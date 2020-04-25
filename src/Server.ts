@@ -8,9 +8,8 @@ import RestaurantController from "./API/Controllers/RestaurantController";
 
 const app = express();
 let port = process.env.PORT;
-if (port == null || port == "") {
-  port = "5000";
-}
+
+require("dotenv").config();
 
 app.use(bodyParser.json());
 app.use(cors());
