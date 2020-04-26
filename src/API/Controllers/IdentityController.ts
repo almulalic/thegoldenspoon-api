@@ -47,4 +47,8 @@ IdentityController.get("/validateToken/:token", (req, res) => {
   IdentityService.ValidateToken(req.params.token, res);
 });
 
+IdentityController.get("/decodeToken/:token", (req, res) => {
+  IdentityService.DecodeToken(req.params.token, res);
+});
+
 export default IdentityController;

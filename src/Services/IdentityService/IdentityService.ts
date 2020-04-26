@@ -230,7 +230,12 @@ class IdentityService implements IIdentityService {
             )
           ) {
             let token = jwt.sign(
-              identityResponse.dataValues,
+              {
+                id: identityResponse.id,
+                username: identityResponse.username,
+                email: identityResponse.email,
+                password: identityResponse.password,
+              },
               process.env.JWT_SECRET,
               {
                 expiresIn: "30min",
@@ -333,7 +338,6 @@ class IdentityService implements IIdentityService {
     let decodedToken;
     try {
       decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-      console.log(decodedToken);
       Identity.findOne({
         where: { id: decodedToken.id },
       })
@@ -341,6 +345,32 @@ class IdentityService implements IIdentityService {
           if (identityResponse) {
             res.status(200);
             return res.json(TokenValidationEnums.TokenValid);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(200);
+          return res.json(TokenValidationEnums.TokenRejected);
+        });
+    } catch (err) {
+      console.log(err);
+      res.status(200);
+      return res.json(TokenValidationEnums.TokenMalformed);
+    }
+  };
+
+  public DecodeToken = (token, res) => {
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+      Identity.findOne({
+        where: { id: decodedToken.id },
+      })
+        .then((identityResponse) => {
+          if (identityResponse) {
+            res.status(200);
+            return res.json({ data: decodedToken });
           }
         })
         .catch((err) => {
