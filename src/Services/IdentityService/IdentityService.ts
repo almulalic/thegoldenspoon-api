@@ -370,7 +370,7 @@ class IdentityService implements IIdentityService {
         .then((identityResponse) => {
           if (identityResponse) {
             res.status(200);
-            return res.json({ data: decodedToken });
+            return res.json(decodedToken);
           }
         })
         .catch((err) => {
