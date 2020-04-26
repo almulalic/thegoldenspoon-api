@@ -7,6 +7,7 @@ import {
   RegisterEnums,
   ConfirmationEnums,
   LoginEnums,
+  TokenValidationEnums,
 } from "./Enums";
 import EmailService from "../EmailServices/EmailService";
 import { ResetPasswordEnums } from "./Enums/ResetPasswordEnum";
@@ -196,18 +197,20 @@ class IdentityService implements IIdentityService {
                 return res.json(ConfirmationEnums.UserSuccessfullyConfirmed);
               })
               .catch((err) => {
+                console.log(err);
                 res.status(200);
                 return res.json(ConfirmationEnums.InternalServerError);
               });
           }
         })
         .catch((err) => {
+          console.log(err);
           res.status(200);
           return res.json(ConfirmationEnums.ConfirmationTokenRejected);
         });
     } catch (err) {
       res.status(200);
-      return res.json(ConfirmationEnums.TokenMalformed);
+      return res.json(ConfirmationEnums.ConfirmationTokenMalformed);
     }
   };
 
@@ -324,6 +327,32 @@ class IdentityService implements IIdentityService {
         else return res.json(1);
       }
     );
+  };
+
+  public ValidateToken = (token, res) => {
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      console.log(decodedToken);
+      Identity.findOne({
+        where: { id: decodedToken.id },
+      })
+        .then((identityResponse) => {
+          if (identityResponse) {
+            res.status(200);
+            return res.json(TokenValidationEnums.TokenValid);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(200);
+          return res.json(TokenValidationEnums.TokenRejected);
+        });
+    } catch (err) {
+      console.log(err);
+      res.status(200);
+      return res.json(TokenValidationEnums.TokenMalformed);
+    }
   };
 }
 

@@ -43,4 +43,8 @@ IdentityController.get("/isUniqueUsername/:username", (req, res) => {
   IdentityService.IsUniqueUsername(req.params.username, res);
 });
 
+IdentityController.get("/validateToken/:token", (req, res) => {
+  IdentityService.ValidateToken(req.params.token, res);
+});
+
 export default IdentityController;
