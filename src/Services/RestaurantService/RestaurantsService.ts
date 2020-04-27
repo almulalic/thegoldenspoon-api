@@ -55,12 +55,12 @@ class RestaurantService {
     });
   };
 
-  public CreateRestaurantRecord = (req, res) => {
+  public UpdateRestaurantRecord = (req, res) => {
     const { body } = req;
     UserRestaurantRecord.findOne({
       where: [{ userId: req.decodedToken.id, restaurantId: body.restaurantId }],
     }).then((restaurantRecord) => {
-      if (restaurantRecord == null) {
+      if (restaurantRecord === null) {
         body.userId = req.decodedToken.id;
         UserRestaurantRecord.create({ ...body, created: new Date() })
           .then(() => {
@@ -71,7 +71,28 @@ class RestaurantService {
             return res.json({ status: "Error during creation." });
           });
       } else {
-        return res.json({ status: "Record already exists." });
+        body.userId = req.decodedToken.id;
+        if (body.status !== 0) {
+          restaurantRecord
+            .update({ ...body })
+            .then(() => {
+              return res.json({ status: "Record successfully updated" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res.json({ status: "Error during update." });
+            });
+        } else {
+          restaurantRecord
+            .destroy()
+            .then(() => {
+              return res.json({ status: "Record successfully removed" });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res.json({ status: "Error during removal." });
+            });
+        }
       }
     });
   };

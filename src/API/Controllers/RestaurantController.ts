@@ -28,10 +28,10 @@ RestaurantController.get("/fetchUserRecord/:id", (req, res) => {
 });
 
 RestaurantController.post(
-  "/createRestaurantRecord",
+  "/updateRestaurantRecord",
   Auth.Authorize(),
   (req, res) => {
-    RestaurantsService.CreateRestaurantRecord(req, res);
+    RestaurantsService.UpdateRestaurantRecord(req, res);
   }
 );
 
