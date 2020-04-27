@@ -31,7 +31,7 @@ RestaurantController.post(
   "/createRestaurantRecord",
   Auth.Authorize(),
   (req, res) => {
-    RestaurantsService.CreateRestaurantRecord(req.body, res);
+    RestaurantsService.CreateRestaurantRecord(req, res);
   }
 );
 

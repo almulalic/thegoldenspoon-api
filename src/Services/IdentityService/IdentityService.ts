@@ -234,7 +234,6 @@ class IdentityService implements IIdentityService {
                 id: identityResponse.id,
                 username: identityResponse.username,
                 email: identityResponse.email,
-                password: identityResponse.password,
               },
               process.env.JWT_SECRET,
               {
