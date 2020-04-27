@@ -55,11 +55,13 @@ class RestaurantService {
     });
   };
 
-  public CreateRestaurantRecord = (body, res) => {
+  public CreateRestaurantRecord = (req, res) => {
+    const { body } = req;
     UserRestaurantRecord.findOne({
-      where: [{ userId: body.userId, restaurantId: body.restaurantId }],
+      where: [{ userId: req.decodedToken.id, restaurantId: body.restaurantId }],
     }).then((restaurantRecord) => {
-      if (!restaurantRecord) {
+      if (restaurantRecord == null) {
+        body.userId = req.decodedToken.id;
         UserRestaurantRecord.create({ ...body, created: new Date() })
           .then(() => {
             return res.json({ status: "Record successfully added" });
