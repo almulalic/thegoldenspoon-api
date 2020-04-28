@@ -5,6 +5,7 @@ import swaggerUi from "swagger-ui-express";
 
 import IdentityController from "./API/Controllers/IdentityController";
 import RestaurantController from "./API/Controllers/RestaurantController";
+import UserController from "./API/Controllers/UserController";
 
 const app = express();
 let port = process.env.PORT || 5000;
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use("/identity", IdentityController);
 app.use("/restaurant", RestaurantController);
+app.use("/user", UserController);
 
 app.listen(port, () => {
   console.log("Server is running on port: " + port);
