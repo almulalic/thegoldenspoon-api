@@ -1,5 +1,5 @@
-export { Identity } from "./Identity";
 export { User } from "./User";
+export { Identity } from "./Identity";
 export { Restaurant } from "./Restaurant";
 export { RestaurantCategory } from "./RestaurantCategory";
 export { RestaurantSubcategory } from "./RestaurantSubcategory";

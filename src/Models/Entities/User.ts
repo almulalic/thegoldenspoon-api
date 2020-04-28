@@ -49,4 +49,4 @@ export const User = db.sequelize.define(
   }
 );
 
-User.belongsTo(Identity, { foreignKey: "userId" });
+User.belongsTo(Identity, { foreignKey: "identityId" });
