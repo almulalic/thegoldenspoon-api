@@ -4,7 +4,7 @@ require("dotenv").config();
 class Auth {
   public Authorize = (credentials = []) => {
     return (req, res, next) => {
-      const token = req.headers["authorization"];
+      const token = req.headers["x-token"];
 
       if (typeof credentials === "string") {
         credentials = [credentials];
@@ -12,9 +12,10 @@ class Auth {
 
       if (token) {
         const tokenBody = token.slice(7);
+
         jwt.verify(tokenBody, process.env.JWT_SECRET, (err, decodedToken) => {
           if (!err) {
-            req.decodedToken = decodedToken;
+            req.user = decodedToken.user;
             next();
           } else {
             console.log(`JWT Error 1: ${err}`);
@@ -31,6 +32,8 @@ class Auth {
       }
     };
   };
+
+  public RefreshToken = (req, res) => {};
 }
 
 export default new Auth();

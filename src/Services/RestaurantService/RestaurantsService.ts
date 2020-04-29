@@ -58,10 +58,10 @@ class RestaurantService {
   public UpdateRestaurantRecord = (req, res) => {
     const { body } = req;
     UserRestaurantRecord.findOne({
-      where: [{ userId: req.decodedToken.id, restaurantId: body.restaurantId }],
+      where: [{ userId: req.user.id, restaurantId: body.restaurantId }],
     }).then((restaurantRecord) => {
       if (restaurantRecord === null) {
-        body.userId = req.decodedToken.id;
+        body.userId = req.user.id;
         UserRestaurantRecord.create({ ...body, created: new Date() })
           .then(() => {
             return res.json({ status: "Record successfully added" });
@@ -71,7 +71,7 @@ class RestaurantService {
             return res.json({ status: "Error during creation." });
           });
       } else {
-        body.userId = req.decodedToken.id;
+        body.userId = req.user.id;
         if (body.status !== 0) {
           restaurantRecord
             .update({ ...body })

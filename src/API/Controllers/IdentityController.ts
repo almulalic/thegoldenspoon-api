@@ -51,4 +51,8 @@ IdentityController.get("/decodeToken/:token", (req, res) => {
   IdentityService.DecodeToken(req.params.token, res);
 });
 
+IdentityController.post("/refreshToken", (body, res) => {
+  IdentityService.RefreshToken(body, res);
+});
+
 export default IdentityController;

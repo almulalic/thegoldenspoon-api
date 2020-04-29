@@ -14,7 +14,7 @@ class UserService {
         "identity.username",
       ],
       raw: true,
-      where: { id: { [sequelize.Op.not]: req.decodedToken.id } },
+      where: { id: { [sequelize.Op.not]: req.user.id } },
     })
       .then((usersResponse) => {
         return res.send(usersResponse);
