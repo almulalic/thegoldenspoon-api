@@ -229,19 +229,44 @@ class IdentityService implements IIdentityService {
               identityResponse.dataValues.password
             )
           ) {
-            let token = jwt.sign(
+            let accessToken = jwt.sign(
               {
-                id: identityResponse.id,
-                username: identityResponse.username,
-                email: identityResponse.email,
+                user: {
+                  id: identityResponse.id,
+                  username: identityResponse.username,
+                  email: identityResponse.email,
+                },
               },
               process.env.JWT_SECRET,
               {
-                expiresIn: "30min",
+                expiresIn: "5sec",
               }
             );
-            res.status(200);
-            return res.json({ token: token });
+
+            let refreshToken = jwt.sign(
+              {
+                user: {
+                  id: identityResponse.id,
+                  username: identityResponse.username,
+                  email: identityResponse.email,
+                },
+              },
+              process.env.JWT_REFRESH_SECRET
+            );
+
+            identityResponse
+              .update({ RefreshToken: refreshToken })
+              .then(() => {
+                res.status(200);
+                return res.json({
+                  accessToken: accessToken,
+                  refreshToken: refreshToken,
+                });
+              })
+              .catch(() => {
+                res.status(200);
+                return res.json(LoginEnums.InternalServerError);
+              });
           } else {
             res.status(200);
             return res.json(LoginEnums.LoginDataNotValid);
@@ -338,7 +363,7 @@ class IdentityService implements IIdentityService {
     try {
       decodedToken = jwt.verify(token, process.env.JWT_SECRET);
       Identity.findOne({
-        where: { id: decodedToken.id },
+        where: { id: decodedToken.user.id },
       })
         .then((identityResponse) => {
           if (identityResponse) {
@@ -364,7 +389,7 @@ class IdentityService implements IIdentityService {
       decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
       Identity.findOne({
-        where: { id: decodedToken.id },
+        where: { id: decodedToken.user.id },
       })
         .then((identityResponse) => {
           if (identityResponse) {
@@ -382,6 +407,39 @@ class IdentityService implements IIdentityService {
       res.status(200);
       return res.json(TokenValidationEnums.TokenMalformed);
     }
+  };
+
+  public RefreshToken = (req, res) => {
+    const refreshToken = req.body.refreshToken;
+    if (refreshToken === null) return res.status(401);
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err) => {
+      if (!err) {
+        Identity.findOne({ where: { RefreshToken: refreshToken } })
+          .then((identityResponse) => {
+            let accessToken = jwt.sign(
+              {
+                user: {
+                  id: identityResponse.id,
+                  username: identityResponse.username,
+                  email: identityResponse.email,
+                },
+              },
+              process.env.JWT_SECRET,
+              {
+                expiresIn: "15s",
+              }
+            );
+            res.json({ accessToken: accessToken });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.send(403);
+          });
+      } else {
+        res.send(401);
+      }
+    });
   };
 }
 

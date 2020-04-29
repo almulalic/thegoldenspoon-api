@@ -25,6 +25,12 @@ export const Identity = db.sequelize.define(
     confirmedAt: {
       type: Sequelize.DATE,
     },
+    RefreshToken: {
+      type: Sequelize.STRING,
+    },
+    Created: {
+      type: Sequelize.DATE,
+    },
   },
   {
     timestamps: 0,
