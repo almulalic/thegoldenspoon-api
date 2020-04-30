@@ -24,10 +24,14 @@ class UserService {
         return res.json({ status: "error" });
       });
   };
-  public FetchUser = (username, res) => {
+  public FetchUser = (req, res) => {
     User.findAll({
       include: [
-        { model: Identity, where: { username: username }, attributes: [] },
+        {
+          model: Identity,
+          where: { username: req.params.username ?? req.user.username },
+          attributes: [],
+        },
       ],
       attributes: [
         "id",

@@ -427,7 +427,7 @@ class IdentityService implements IIdentityService {
               },
               process.env.JWT_SECRET,
               {
-                expiresIn: "15s",
+                expiresIn: "10sec",
               }
             );
             res.json({ accessToken: accessToken });
