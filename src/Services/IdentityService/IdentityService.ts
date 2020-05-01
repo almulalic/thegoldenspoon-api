@@ -239,7 +239,7 @@ class IdentityService implements IIdentityService {
               },
               process.env.JWT_SECRET,
               {
-                expiresIn: "5sec",
+                expiresIn: "20min",
               }
             );
 
@@ -427,7 +427,7 @@ class IdentityService implements IIdentityService {
               },
               process.env.JWT_SECRET,
               {
-                expiresIn: "10sec",
+                expiresIn: "10min",
               }
             );
             res.json({ accessToken: accessToken });
