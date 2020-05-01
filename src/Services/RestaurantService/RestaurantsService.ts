@@ -15,28 +15,6 @@ class RestaurantService {
     });
   };
 
-  public FetchExpandedCategories = (res) => {
-    RestaurantCategory.findAll().then((categoriesResponse) => {
-      let _expandedCategories = [];
-      let _temp = {
-        categoryData: {},
-        subcategoryData: {},
-      };
-      // console.log(categoriesResponse[0]);
-      // categoriesResponse.dataValues.forEach((category) => {
-      //   RestaurantSubcategory.findAll({
-      //     where: { categoryId: category.id },
-      //   }).then((subcategoryResponse) => {
-      //     _expandedCategories.push({
-      //       categoryData: category,
-      //       subcategoryData: subcategoryResponse,
-      //     });
-      //   });
-      // });
-      return res.json(_expandedCategories);
-    });
-  };
-
   public FetchSubcategires = (res) => {
     RestaurantSubcategory.findAll().then((resp) => {
       return res.json(resp);
