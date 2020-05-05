@@ -4,7 +4,7 @@ import sequelize from "sequelize";
 class UserService {
   public FetchAllUsers = (req, res) => {
     User.findAll({
-      include: [{ model: Identity, attributes: [] }],
+      include: [{ model: Identity, attributes: [], isConfirmed: true }],
       attributes: [
         "id",
         "firstName",
@@ -29,7 +29,10 @@ class UserService {
       include: [
         {
           model: Identity,
-          where: { username: req.params.username ?? req.user.username },
+          where: {
+            username: req.params.username ?? req.user.username,
+            isConfirmed: true,
+          },
           attributes: [],
         },
       ],
