@@ -215,53 +215,75 @@ class IdentityService implements IIdentityService {
   };
 
   public LoginUser = (body, res) => {
-    Identity.findOne({
-      where: { [Op.or]: [{ email: body.email }, { username: body.email }] },
+    User.findOne({
+      include: [
+        {
+          model: Identity,
+          where: { [Op.or]: [{ email: body.email }, { username: body.email }] },
+        },
+      ],
     })
-      .then((identityResponse) => {
-        if (identityResponse) {
-          if (!identityResponse.isConfirmed)
+      .then((userIdentityResponse) => {
+        if (userIdentityResponse) {
+          if (!userIdentityResponse.identity.isConfirmed)
             return res.json(LoginEnums.AccountNotConfirmed);
 
           if (
             bcrypt.compareSync(
               body.password,
-              identityResponse.dataValues.password
+              userIdentityResponse.identity.password
             )
           ) {
             let accessToken = jwt.sign(
               {
                 user: {
-                  id: identityResponse.id,
-                  username: identityResponse.username,
-                  email: identityResponse.email,
+                  id: userIdentityResponse.identity.id,
+                  username: userIdentityResponse.identity.username,
+                  email: userIdentityResponse.identity.email,
+                  firstName: userIdentityResponse.firstName,
+                  middleName: userIdentityResponse.middleName,
+                  lastName: userIdentityResponse.lastName,
+                  country: userIdentityResponse.country,
                 },
               },
               process.env.JWT_SECRET,
               {
-                expiresIn: "20min",
+                expiresIn: "15sec",
               }
             );
 
             let refreshToken = jwt.sign(
               {
                 user: {
-                  id: identityResponse.id,
-                  username: identityResponse.username,
-                  email: identityResponse.email,
+                  id: userIdentityResponse.identity.id,
+                  username: userIdentityResponse.identity.username,
+                  email: userIdentityResponse.identity.email,
+                  firstName: userIdentityResponse.firstName,
+                  middleName: userIdentityResponse.middleName,
+                  lastName: userIdentityResponse.lastName,
+                  country: userIdentityResponse.country,
                 },
               },
               process.env.JWT_REFRESH_SECRET
             );
 
-            identityResponse
-              .update({ RefreshToken: refreshToken })
-              .then(() => {
-                res.status(200);
-                return res.json({
-                  accessToken: accessToken,
-                  refreshToken: refreshToken,
-                });
+            Identity.findOne({
+              where: { id: userIdentityResponse.identity.id },
+            })
+              .then((identityResponse) => {
+                identityResponse
+                  .update({ refreshToken: refreshToken })
+                  .then(() => {
+                    res.status(200);
+                    return res.json({
+                      accessToken: accessToken,
+                      refreshToken: refreshToken,
+                    });
+                  })
+                  .catch(() => {
+                    res.status(200);
+                    return res.json(LoginEnums.InternalServerError);
+                  });
               })
               .catch(() => {
                 res.status(200);
@@ -415,22 +437,34 @@ class IdentityService implements IIdentityService {
 
     jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err) => {
       if (!err) {
-        Identity.findOne({ where: { RefreshToken: refreshToken } })
-          .then((identityResponse) => {
-            let accessToken = jwt.sign(
-              {
-                user: {
-                  id: identityResponse.id,
-                  username: identityResponse.username,
-                  email: identityResponse.email,
+        User.findOne({
+          include: [
+            {
+              model: Identity,
+              where: { refreshToken: refreshToken },
+            },
+          ],
+        })
+          .then((userIdentityResponse) => {
+            if (userIdentityResponse) {
+              let accessToken = jwt.sign(
+                {
+                  user: {
+                    id: userIdentityResponse.identity.id,
+                    username: userIdentityResponse.identity.username,
+                    email: userIdentityResponse.identity.email,
+                    firstName: userIdentityResponse.firstName,
+                    middleName: userIdentityResponse.middleName,
+                    lastName: userIdentityResponse.lastName,
+                    country: userIdentityResponse.country,
+                  },
                 },
-              },
-              process.env.JWT_SECRET,
-              {
-                expiresIn: "10min",
-              }
-            );
-            res.json({ accessToken: accessToken });
+                process.env.JWT_SECRET
+              );
+              res.json({ accessToken: accessToken });
+            } else {
+              res.send(403);
+            }
           })
           .catch((err) => {
             console.log(err);
