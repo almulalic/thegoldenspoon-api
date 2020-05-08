@@ -24,6 +24,15 @@ export const UserRestaurantRecord = db.sequelize.define(
     isFavorite: {
       type: Sequelize.INTEGER,
     },
+    dateVisited: {
+      type: Sequelize.DATE,
+    },
+    comment: {
+      type: Sequelize.STRING,
+    },
+    lastModified: {
+      type: Sequelize.DATE,
+    },
     created: {
       type: Sequelize.DATE,
     },

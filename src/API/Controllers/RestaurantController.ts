@@ -15,12 +15,16 @@ RestaurantController.get(
   "/fetchSubcategories",
   Auth.Authorize(),
   (req, res) => {
-    RestaurantsService.FetchSubcategires(res);
+    RestaurantsService.FetchSubcategories(res);
   }
 );
 
 RestaurantController.get("/fetchRestaurants", Auth.Authorize(), (req, res) => {
   RestaurantsService.FetchRestaurants(res);
+});
+
+RestaurantController.get("/fetchUserRecord", Auth.Authorize(), (req, res) => {
+  RestaurantsService.FetchUserRecord(req, res);
 });
 
 RestaurantController.get(
@@ -31,31 +35,11 @@ RestaurantController.get(
   }
 );
 
-RestaurantController.get("/fetchUserRecord", Auth.Authorize(), (req, res) => {
-  RestaurantsService.FetchUserRecord(req, res);
-});
-
 RestaurantController.post(
   "/updateRestaurantRecord",
   Auth.Authorize(),
   (req, res) => {
     RestaurantsService.UpdateRestaurantRecord(req, res);
-  }
-);
-
-RestaurantController.get(
-  "/fetchUserStatistics/:uid",
-  Auth.Authorize(),
-  (req, res) => {
-    RestaurantsService.FetchUserStatistics(req, res);
-  }
-);
-
-RestaurantController.get(
-  "/fetchUserStatistics",
-  Auth.Authorize(),
-  (req, res) => {
-    RestaurantsService.FetchUserStatistics(req, res);
   }
 );
 
