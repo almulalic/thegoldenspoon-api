@@ -9,15 +9,15 @@ StatisticsController.use(cors());
 
 StatisticsController.get(
   "/fetchUserStatistics",
-  Auth.Authorize(),
+  // Auth.Authorize(),
   (req, res) => {
     StatisticsService.FetchUserStatistics(req, res);
   }
 );
 
 StatisticsController.get(
-  "/fetchUserStatistics/:uid",
-  Auth.Authorize(),
+  "/fetchUserStatistics/:username",
+  // Auth.Authorize(),
   (req, res) => {
     StatisticsService.FetchUserStatistics(req, res);
   }
@@ -28,6 +28,14 @@ StatisticsController.post(
   //   Auth.Authorize(),
   (req, res) => {
     StatisticsService.FetchStatisticsByDate(req, res);
+  }
+);
+
+StatisticsController.post(
+  "/fetchUserCategoriesStatistics",
+  //   Auth.Authorize(),
+  (req, res) => {
+    StatisticsService.FetchCategoriesStatistics(req, res);
   }
 );
 

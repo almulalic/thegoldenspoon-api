@@ -77,17 +77,16 @@ class RestaurantService implements IRestaurantService {
           });
       } else {
         body.userId = req.user.id;
-        if (body.status !== 0) {
-          restaurantRecord
-            .update({ ...body })
-            .then(() => {
-              return res.json({ status: "Record successfully updated" });
-            })
-            .catch((err) => {
-              console.log(err);
-              return res.json({ status: "Error during update." });
-            });
-        }
+
+        restaurantRecord
+          .update({ ...body })
+          .then(() => {
+            return res.json({ status: "Record successfully updated" });
+          })
+          .catch((err) => {
+            console.log(err);
+            return res.json({ status: "Error during update." });
+          });
       }
     });
   };
