@@ -4,8 +4,13 @@ import _ from "lodash";
 class StatisticsService {
   public FetchUserStatistics = (req, res) => {
     UserRestaurantRecord.findAll({
-      include: [Restaurant],
-      where: { userId: req.params.uid ?? req.user.id },
+      include: [
+        {
+          model: User,
+          where: { username: req.params.username ?? req.user.username },
+        },
+        { model: Restaurant },
+      ],
     })
       .then((userDataResponse) => {
         let categoryTotals = Array(5).fill(0);
@@ -52,9 +57,26 @@ class StatisticsService {
       });
   };
 
-  //   public FetchStatisticsByCategories = (req,res) => {
-  //       UserRestaurantRecord.
-  //   }
+  public FetchCategoriesStatistics = (req, res) => {
+    UserRestaurantRecord.findAll({
+      include: [
+        {
+          model: User,
+          where: { username: req.body.username ?? req.user.username },
+        },
+        { model: Restaurant },
+      ],
+    })
+      .then((userRecordResponse) => {
+        let categoryTotals = Array(5).fill(0);
+
+        return res.send(userRecordResponse);
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.json(4);
+      });
+  };
 }
 
 export default new StatisticsService();
