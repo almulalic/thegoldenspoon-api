@@ -1,6 +1,8 @@
 import { Restaurant, UserRestaurantRecord, User } from "../../Models/Entities";
 import _ from "lodash";
 
+require("dotenv").config();
+
 class StatisticsService {
   public FetchUserStatistics = (req, res) => {
     UserRestaurantRecord.findAll({
@@ -20,8 +22,13 @@ class StatisticsService {
         userDataResponse.map((record) => {
           categoryTotals[record.restaurant.categoryId - 1]++;
           subcategoryTotals[record.restaurant.subcategoryId - 1]++;
-          statusTotals[record.status - 1]++;
+          statusTotals[record.status]++;
         });
+
+        statusTotals[0] =
+          Number(process.env.TOTAL_RESTAURANTS) -
+          statusTotals[1] -
+          statusTotals[2];
 
         res.json({
           total: userDataResponse.length,
@@ -54,6 +61,32 @@ class StatisticsService {
       })
       .error((err) => {
         console.log(err);
+      });
+  };
+
+  public FetchGoldenSpoonProgress = (req, res) => {
+    UserRestaurantRecord.findAll({
+      include: {
+        model: User,
+        where: { username: req.params.username ?? req.user.username },
+      },
+    })
+      .then((userRecordResponse) => {
+        const visited = _.countBy(userRecordResponse, (x) => {
+          return x.status === 2;
+        }).true;
+        const precent = Math.round(
+          (visited / Number(process.env.TOTAL_RESTAURANTS), 2)
+        );
+
+        return res.json({
+          visited: visited,
+          precent: precent,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.json(4);
       });
   };
 

@@ -61,7 +61,6 @@ class IdentityService implements IIdentityService {
                       userData.identityId,
                       body
                     );
-
                     if (confirmationEmailSuccess)
                       return res.json({
                         status: RegisterEnums.RegisteredNeedsConfirmation,
@@ -248,7 +247,7 @@ class IdentityService implements IIdentityService {
               },
               process.env.JWT_SECRET,
               {
-                expiresIn: "15sec",
+                expiresIn: "20min",
               }
             );
 

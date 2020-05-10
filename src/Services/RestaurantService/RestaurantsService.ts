@@ -77,7 +77,6 @@ class RestaurantService implements IRestaurantService {
           });
       } else {
         body.userId = req.user.id;
-
         restaurantRecord
           .update({ ...body })
           .then(() => {
