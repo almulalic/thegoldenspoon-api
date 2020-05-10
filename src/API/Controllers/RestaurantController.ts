@@ -35,7 +35,7 @@ RestaurantController.get(
   }
 );
 
-RestaurantController.post(
+RestaurantController.put(
   "/updateRestaurantRecord",
   Auth.Authorize(),
   (req, res) => {

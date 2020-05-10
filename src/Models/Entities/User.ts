@@ -1,5 +1,6 @@
 import db from "../../Database/DbModel";
 import { Identity } from "./Identity";
+import { Country } from "./Country";
 
 const Sequelize = require("sequelize");
 
@@ -17,11 +18,14 @@ export const User = db.sequelize.define(
     lastName: {
       type: Sequelize.STRING,
     },
+    username: {
+      type: Sequelize.STRING,
+    },
     bornOn: {
       type: Sequelize.DATE,
     },
-    country: {
-      type: Sequelize.DATE,
+    countryId: {
+      type: Sequelize.STRING,
     },
     adress: {
       type: Sequelize.DATE,
@@ -50,3 +54,4 @@ export const User = db.sequelize.define(
 );
 
 User.belongsTo(Identity, { foreignKey: "identityId" });
+User.belongsTo(Country, { foreignKey: "countryId" });
