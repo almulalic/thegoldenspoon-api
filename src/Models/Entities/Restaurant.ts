@@ -1,4 +1,5 @@
 import db from "../../Database/DbModel";
+import { Country } from "./Country";
 
 const Sequelize = require("sequelize");
 
@@ -19,7 +20,7 @@ export const Restaurant = db.sequelize.define(
     categoryId: {
       type: Sequelize.INTEGER,
     },
-    country: {
+    countryId: {
       type: Sequelize.STRING,
     },
     adress: {
@@ -38,3 +39,5 @@ export const Restaurant = db.sequelize.define(
     freezeTableName: true,
   }
 );
+
+Restaurant.belongsTo(Country, { foreignKey: "countryId" });
