@@ -1,16 +1,20 @@
 import { Identity, User } from "../../Models/Entities";
 import sequelize from "sequelize";
+import { Country } from "../../Models/Entities/Country";
 
 class UserService {
   public FetchAllUsers = (req, res) => {
     User.findAll({
-      include: [{ model: Identity, attributes: [], isConfirmed: true }],
+      include: [
+        { model: Identity, attributes: [], isConfirmed: true },
+        { model: Country, attributes: [] },
+      ],
       attributes: [
         "id",
         "firstName",
         "lastName",
         "avatar",
-        "country",
+        "countryId",
         "identity.username",
       ],
       raw: true,
@@ -41,7 +45,7 @@ class UserService {
         "firstName",
         "lastName",
         "avatar",
-        "country",
+        "countryId",
         "identity.username",
         "identity.email",
       ],
