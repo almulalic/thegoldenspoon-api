@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model country {
+  id         String       @default("") @id
+  name       String?
+  restaurant restaurant[]
+  user       user[]
+}
+
+model identity {
+  ArchivedAt   DateTime?
+  ConfirmedAt  DateTime?
+  Created      DateTime  @default(now())
+  Email        String
+  Id           Int       @default(autoincrement()) @id
+  IsConfirmed  Boolean
+  LastModified DateTime  @default(now())
+  Password     String
+  RefreshToken String?
+  Username     String
+  user         user[]
+}
+
+model restaurant {
+  Adress                String?
+  CategoryId            Int
+  CountryId             String?
+  Created               DateTime
+  Id                    Int                    @default(autoincrement()) @id
+  Image                 String?
+  LastModified          DateTime               @default(now())
+  Name                  String
+  SubcategoryId         Int
+  restaurantcategory    restaurantcategory     @relation(fields: [CategoryId], references: [Id])
+  country               country?               @relation(fields: [CountryId], references: [id])
+  restaurantsubcategory restaurantsubcategory  @relation(fields: [SubcategoryId], references: [Id])
+  userrestaurantrecord  userrestaurantrecord[]
+
+  @@index([CountryId], name: "CountryId")
+  @@index([CategoryId], name: "fk_restaurant_category")
+  @@index([SubcategoryId], name: "fk_restaurant_subcategory")
+}
+
+model restaurantcategory {
+  Created               DateTime
+  Id                    Int                     @default(autoincrement()) @id
+  LastModified          DateTime                @default(now())
+  Name                  String
+  restaurant            restaurant[]
+  restaurantsubcategory restaurantsubcategory[]
+}
+
+model restaurantsubcategory {
+  CategoryId         Int
+  Created            DateTime
+  Id                 Int                @default(autoincrement()) @id
+  LastModified       DateTime           @default(now())
+  Name               String
+  restaurantcategory restaurantcategory @relation(fields: [CategoryId], references: [Id])
+  restaurant         restaurant[]
+
+  @@index([CategoryId], name: "fk_subcategory_category")
+}
+
+model user {
+  Adress               String?
+  ArchivedAt           DateTime?
+  Avatar               String?
+  BornOn               DateTime
+  CountryId            String?
+  Created              DateTime
+  FirstName            String
+  Id                   Int                    @default(autoincrement()) @id
+  IdentityId           Int
+  LastModified         DateTime               @default(now())
+  LastName             String
+  MiddleName           String?
+  Role                 Int
+  Sex                  Boolean
+  Username             String?
+  country              country?               @relation(fields: [CountryId], references: [id])
+  identity             identity               @relation(fields: [IdentityId], references: [Id])
+  userrestaurantrecord userrestaurantrecord[]
+
+  @@index([CountryId], name: "CountryId")
+  @@index([IdentityId], name: "fk_users_identitiy")
+}
+
+model userrestaurantrecord {
+  Comment      String?
+  Created      DateTime
+  DateVisited  DateTime?
+  Id           Int        @default(autoincrement()) @id
+  IsFavorite   Boolean
+  LastModified DateTime   @default(now())
+  RestaurantId Int
+  Status       Int
+  UserId       Int
+  restaurant   restaurant @relation(fields: [RestaurantId], references: [Id])
+  user         user       @relation(fields: [UserId], references: [Id])
+
+  @@index([RestaurantId], name: "fk_userRecords_restaurant")
+  @@index([UserId], name: "fk_userRecords_user")
+}
