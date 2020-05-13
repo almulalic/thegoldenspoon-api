@@ -1,4 +1,4 @@
-import db from "../../Database/DbModel";
+import db from "../../DatabaseOld/DbModel";
 
 const Sequelize = require("sequelize");
 

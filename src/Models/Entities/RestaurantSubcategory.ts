@@ -1,4 +1,4 @@
-import db from "../../Database/DbModel";
+import db from "../../DatabaseOld/DbModel";
 import { RestaurantCategory } from "./RestaurantCategory";
 
 const Sequelize = require("sequelize");

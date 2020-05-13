@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import Auth from "../../Auth/Auth";
-import RestaurantsService from "../../Services/RestaurantService/RestaurantsService";
+import RestaurantsService from "../../Services/Restaurant/RestaurantsService";
 
 const RestaurantController = express.Router();
 

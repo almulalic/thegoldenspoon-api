@@ -1,4 +1,4 @@
-import db from "../../Database/DbModel";
+import db from "../../DatabaseOld/DbModel";
 import { Restaurant } from "./Restaurant";
 import { User } from "./User";
 

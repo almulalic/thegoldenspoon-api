@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import Auth from "../../Auth/Auth";
-import UserService from "../../Services/UserService/UserService";
+import UserService from "../../Services/User/UserService";
 
 const UserController = express.Router();
 

@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import Auth from "../../Auth/Auth";
-import StatisticsService from "../../Services/StatisticsService/StatisticsService";
+import StatisticsService from "../../Services/Statistics/StatisticsService";
 
 const StatisticsController = express.Router();
 

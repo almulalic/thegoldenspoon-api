@@ -1,4 +1,4 @@
-import db from "../../Database/DbModel";
+import db from "../../DatabaseOld/DbModel";
 import { Country } from "./Country";
 
 const Sequelize = require("sequelize");

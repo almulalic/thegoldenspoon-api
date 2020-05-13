@@ -1,4 +1,4 @@
-import db from "../../Database/DbModel";
+import db from "../../DatabaseOld/DbModel";
 import { Identity } from "./Identity";
 import { Country } from "./Country";
 
