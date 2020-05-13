@@ -1,17 +1,11 @@
-import { EmailEnums } from "./EmailEnums";
+import { EmailEnums } from "../../Common/Enumerations/Email/Service/EmailEnums";
 import jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
+import { IEmailService } from "../../Common/Interfaces/IEmailService";
 
 require("dotenv").config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-export interface IEmailService {
-  SendConfirmationEmail(id: number, body: any): void;
-  ResendConfirmationEmail(userData: any): void;
-  SendResetPasswordEmail(id: number, body: any): void;
-  SendGenericEmail(body: any): void;
-}
 
 class EmailService implements IEmailService {
   public SendConfirmationEmail = async (id, body) => {

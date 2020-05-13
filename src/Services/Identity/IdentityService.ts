@@ -8,23 +8,14 @@ import {
   ConfirmationEnums,
   LoginEnums,
   TokenValidationEnums,
-} from "./Enums";
-import EmailService from "../EmailServices/EmailService";
-import { ResetPasswordEnums } from "./Enums/ResetPasswordEnum";
-import { ResetPasswordConfirmations } from "./Enums/ResetPasswordConfirmations";
+} from "../../Common/Enumerations/Identity/Service";
+import EmailService from "../Email/EmailService";
+import { ResetPasswordEnums } from "../../Common/Enumerations/Identity/Service/ResetPasswordEnum";
+import { ResetPasswordConfirmations } from "../../Common/Enumerations/Identity/Service/ResetPasswordConfirmations";
 import { Identity, User } from "../../Models/Entities";
+import { IIdentityService } from "../../Common/Interfaces/IIdentityInterface";
 
 require("dotenv").config();
-
-export interface IIdentityService {
-  RegisterUser(body, res): any;
-  ResendConfirmation(body, res): any;
-  ChangeConfirmationEmail(body, res): any;
-  ConfirmUser(body, res): any;
-  LoginUser(body, res): any;
-  ResetPasswordRequest?(body, res): any;
-  ResetPasswordConfim?(token, body, res): any;
-}
 
 class IdentityService implements IIdentityService {
   public RegisterUser = (body: any, res: any) => {

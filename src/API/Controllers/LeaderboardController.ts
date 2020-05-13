@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import Auth from "../../Auth/Auth";
-import LeaderbordService from "../../Services/LeaderbordService/LeaderbordService";
+import LeaderbordService from "../../Services/Leaderbord/LeaderbordService";
 
 const LeaderboardController = express.Router();
 
