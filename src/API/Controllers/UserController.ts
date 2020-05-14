@@ -11,6 +11,14 @@ UserController.get("/fetchAllUsers", Auth.Authorize(), (req, res) => {
   UserService.FetchAllUsers(req, res);
 });
 
+UserController.get(
+  "/fetchAllUsersWithSummary",
+  Auth.Authorize(),
+  (req, res) => {
+    UserService.FetchAllUsersWithSummary(req, res);
+  }
+);
+
 UserController.get("/fetchUser/:username", Auth.Authorize(), (req, res) => {
   UserService.FetchUser(req, res);
 });

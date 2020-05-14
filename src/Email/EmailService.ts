@@ -1,7 +1,7 @@
-import { EmailEnums } from "../../Common/Enumerations/Email/Service/EmailEnums";
+import { EmailEnums } from "../Common/Enumerations/Email/Service/EmailEnums";
 import jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
-import { IEmailService } from "../../Common/Interfaces/IEmailService";
+import { IEmailService } from "../Common/Interfaces/IEmailService";
 
 require("dotenv").config();
 

@@ -15,6 +15,14 @@ StatisticsController.get(
   }
 );
 
+// StatisticsController.get(
+//   "/fetchUserStatistics/:username",
+//   Auth.Authorize(),
+//   (req, res) => {
+//     StatisticsService.FetchUserStatistics(req, res);
+//   }
+// );
+
 StatisticsController.post(
   "/fetchStatisticsByDate",
   Auth.Authorize(),
