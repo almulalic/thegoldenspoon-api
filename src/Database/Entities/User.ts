@@ -8,6 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   OneToOne,
+  DeleteDateColumn,
 } from "typeorm";
 import { Identity } from "./Identity";
 import { Country } from "./Country";
@@ -62,7 +63,7 @@ export class User extends BaseEntity {
   })
   modifiedAt?: Date;
 
-  @Column("datetime", { name: "ArchivedAt", nullable: true })
+  @DeleteDateColumn({ name: "ArchivedAt", nullable: true, select: false })
   archivedAt?: Date | null;
 
   @OneToOne(() => Identity, (identity) => identity.users, {

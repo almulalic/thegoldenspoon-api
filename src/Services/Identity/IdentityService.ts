@@ -9,7 +9,7 @@ import {
   LoginEnums,
   TokenValidationEnums,
 } from "../../Common/Enumerations/Identity/Service";
-import EmailService from "../Email/EmailService";
+import EmailService from "../../Email/EmailService";
 import { ResetPasswordEnums } from "../../Common/Enumerations/Identity/Service/ResetPasswordEnum";
 import { ResetPasswordConfirmations } from "../../Common/Enumerations/Identity/Service/ResetPasswordConfirmations";
 import { Identity, User } from "../../Models/Entities";
