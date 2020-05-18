@@ -34,7 +34,7 @@ export class User extends BaseEntity {
   username?: string | null;
 
   @Column("date", { name: "BornOn" })
-  bornOn?: string;
+  bornOn?: Date;
 
   @Column("tinyint", { name: "Sex", width: 1 })
   sex?: boolean;
@@ -45,21 +45,22 @@ export class User extends BaseEntity {
   @Column("varchar", { name: "Adress", nullable: true, length: 60 })
   adress?: string | null;
 
-  @Column("int", { name: "IdentityId" })
+  @Column("int", { name: "IdentityId", select: false })
   identityId?: number;
 
   @Column("varchar", { name: "Avatar", nullable: true, length: 128 })
   avatar?: string | null;
 
-  @Column("tinyint", { name: "Role" })
+  @Column("tinyint", { name: "Role", select: false })
   role?: number;
 
-  @Column("datetime", { name: "Created" })
+  @Column("datetime", { name: "Created", select: false })
   created?: Date;
 
   @Column("timestamp", {
     name: "ModifiedAt",
     default: () => "CURRENT_TIMESTAMP",
+    select: false,
   })
   modifiedAt?: Date;
 

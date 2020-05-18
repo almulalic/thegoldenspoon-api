@@ -40,11 +40,28 @@ class UserService implements IUserInterface {
     try {
       res.json(
         await createQueryBuilder("User")
-          .leftJoin("User.country", "Country")
+          .select([
+            "User.id id",
+            "User.firstName firstName",
+            "User.middleName middleName",
+            "User.lastName lastName",
+            "User.username username",
+            "User.bornOn bornOn",
+            "User.sex sex",
+            "User.adress adress",
+            "User.avatar avatar",
+          ])
+          .innerJoin("User.identity", "Identity")
+          .innerJoin("User.country", "Country")
+          .addSelect([
+            "Identity.email email",
+            "Country.id countryId",
+            "Country.name countryName",
+          ])
           .where("User.username = :username", {
             username: req.params.username ?? req.user.username,
           })
-          .getOne()
+          .getRawOne()
       );
     } catch (err) {
       res.sendStatus(400);

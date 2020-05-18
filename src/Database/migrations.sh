@@ -10,4 +10,4 @@ echo "Migration name: " migrationName
 echo "Description: " description
 
 echo "Migration generated successfully "
-#/ts-node ./node_modules/typeorm/cli.js  migration:generate
+#/ts-node ./node_modules/typeorm/cli.js migration:generate -n

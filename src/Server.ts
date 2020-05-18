@@ -10,6 +10,7 @@ import IdentityController from "./API/Controllers/IdentityController";
 import RestaurantController from "./API/Controllers/RestaurantController";
 import StatisticsController from "./API/Controllers/StatisticsController";
 import LeaderboardController from "./API/Controllers/LeaderboardController";
+import RestaurantRecordController from "./API/Controllers/RestaurantRecordController";
 
 createConnection()
   .then(async (connection) => {
@@ -27,7 +28,8 @@ createConnection()
     app.use("/identity", IdentityController);
     app.use("/restaurant", RestaurantController);
     app.use("/statistics", StatisticsController);
-    app.use("/Leaderboard", LeaderboardController);
+    app.use("/leaderboard", LeaderboardController);
+    app.use("/restaurantRecord", RestaurantRecordController);
 
     app.listen(port, async () => {
       console.log(

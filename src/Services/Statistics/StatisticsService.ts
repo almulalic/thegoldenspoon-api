@@ -1,85 +1,56 @@
 import _ from "lodash";
 import { createQueryBuilder } from "typeorm";
-import { User } from "../../Database/Entities/User";
+import { classToPlain } from "class-transformer";
+import { RoundTwoDecimals } from "../../Shared/helpers";
 
 require("dotenv").config();
 
 class StatisticsService {
   public FetchUserStatistics = async (req, res) => {
     try {
-      let userDataResponse = (await createQueryBuilder(User)
-        .leftJoinAndSelect("User.userrestaurantrecords", "Userrestaurantrecord")
-        .where("User.username = :username", { username: req.user.username })
-        .getOne()) as User;
+      let userDataResponse = classToPlain(
+        await createQueryBuilder("User")
+          .innerJoinAndSelect(
+            "User.userrestaurantrecords",
+            "Userrestaurantrecord"
+          )
+          .innerJoinAndSelect("Userrestaurantrecord.restaurant", "Restaurant")
+          .where("User.username = :username", { username: req.user.username })
+          .getOne()
+      ) as any;
 
       let categoryTotals = Array(5).fill(0);
       let subcategoryTotals = Array(39).fill(0);
       let statusTotals = Array(3).fill(0);
-      console.log(userDataResponse.userrestaurantrecords);
-      res.json(userDataResponse);
-      // userDataResponse.userrestaurantrecords.map((record) => {
-      //   categoryTotals[record.restaurant.categoryId - 1]++;
-      //   subcategoryTotals[record.restaurant.subcategoryId - 1]++;
-      //   statusTotals[record.status]++;
-      // });
 
-      // statusTotals[0] =
-      //   Number(process.env.TOTAL_RESTAURANTS) -
-      //   statusTotals[1] -
-      //   statusTotals[2];
+      userDataResponse.userrestaurantrecords.map((record) => {
+        categoryTotals[record.restaurant.categoryId - 1]++;
+        subcategoryTotals[record.restaurant.subcategoryId - 1]++;
+        statusTotals[record.status]++;
+      });
 
-      // res.json({
-      //   total: userDataResponse.length,
-      //   categoryTotal: categoryTotals,
-      //   subcategoryTotals: subcategoryTotals,
-      //   statusTotals: statusTotals,
-      //   totalFavorites: _.filter(userDataResponse, (x) => {
-      //     if (x.isFavorite) return x;
-      //   }).length,
-      // });
+      statusTotals[0] =
+        Number(process.env.TOTAL_RESTAURANTS) -
+        statusTotals[1] -
+        statusTotals[2];
+
+      res.json({
+        total: userDataResponse.length,
+        categoryTotal: categoryTotals,
+        subcategoryTotals: subcategoryTotals,
+        statusTotals: statusTotals,
+        totalFavorites: _.filter(
+          userDataResponse.userrestaurantrecords,
+          (x) => {
+            console.log(x);
+            if (x.isFavorite) return x;
+          }
+        ).length,
+      });
     } catch (err) {
       console.log(err);
       res.sendStatus(400);
     }
-    // UserRestaurantRecord.findAll({
-    //   include: [
-    //     {
-    //       model: User,
-    //       where: { username: req.params.username ?? req.user.username },
-    //     },
-    //     { model: Restaurant },
-    //   ],
-    // })
-    //   .then((userDataResponse) => {
-    //     let categoryTotals = Array(5).fill(0);
-    //     let subcategoryTotals = Array(39).fill(0);
-    //     let statusTotals = Array(3).fill(0);
-
-    //     userDataResponse.map((record) => {
-    //       categoryTotals[record.restaurant.categoryId - 1]++;
-    //       subcategoryTotals[record.restaurant.subcategoryId - 1]++;
-    //       statusTotals[record.status]++;
-    //     });
-
-    //     statusTotals[0] =
-    //       Number(process.env.TOTAL_RESTAURANTS) -
-    //       statusTotals[1] -
-    //       statusTotals[2];
-
-    //     res.json({
-    //       total: userDataResponse.length,
-    //       categoryTotal: categoryTotals,
-    //       subcategoryTotals: subcategoryTotals,
-    //       statusTotals: statusTotals,
-    //       totalFavorites: _.filter(userDataResponse, (x) => {
-    //         if (x.isFavorite) return x;
-    //       }).length,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     res.send("error");
-    //   });
   };
 
   public FetchStatisticsByDate = (req, res) => {
@@ -100,29 +71,35 @@ class StatisticsService {
     //   });
   };
 
-  public FetchGoldenSpoonProgress = (req, res) => {
-    // UserRestaurantRecord.findAll({
-    //   include: {
-    //     model: User,
-    //     where: { username: req.params.username ?? req.user.username },
-    //   },
-    // })
-    //   .then((userRecordResponse) => {
-    //     const visited = _.countBy(userRecordResponse, (x) => {
-    //       return x.status === 2;
-    //     }).true;
-    //     const precent = Math.round(
-    //       (visited / Number(process.env.TOTAL_RESTAURANTS), 2)
-    //     );
-    //     return res.json({
-    //       visited: visited,
-    //       precent: precent,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     return res.json(4);
-    //   });
+  public FetchGoldenSpoonProgress = async (req, res) => {
+    try {
+      let userDataResponse = classToPlain(
+        await createQueryBuilder("User")
+          .innerJoinAndSelect(
+            "User.userrestaurantrecords",
+            "Userrestaurantrecord"
+          )
+          .innerJoinAndSelect("Userrestaurantrecord.restaurant", "Restaurant")
+          .where("User.username = :username", { username: req.user.username })
+          .getOne()
+      ) as any;
+
+      const visited = _.countBy(userDataResponse.userrestaurantrecords, (x) => {
+        return x.status === 2;
+      }).true;
+
+      const precent = RoundTwoDecimals(
+        visited ?? (0 / Number(process.env.TOTAL_RESTAURANTS)) * 100
+      );
+
+      return res.json({
+        visited: visited,
+        precent: precent,
+      });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(400);
+    }
   };
 
   public FetchCategoriesStatistics = (req, res) => {

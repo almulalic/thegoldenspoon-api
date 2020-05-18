@@ -42,7 +42,7 @@ export const User = db.sequelize.define(
     created: {
       type: Sequelize.DATE,
     },
-    lastModified: {
+    modifiedAt: {
       type: Sequelize.NOW,
     },
   },
