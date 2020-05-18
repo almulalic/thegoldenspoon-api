@@ -23,24 +23,4 @@ RestaurantController.get("/fetchRestaurants", Auth.Authorize(), (req, res) => {
   RestaurantsService.FetchRestaurants(res);
 });
 
-RestaurantController.get("/fetchUserRecord", Auth.Authorize(), (req, res) => {
-  RestaurantsService.FetchUserRecord(req, res);
-});
-
-RestaurantController.get(
-  "/fetchUserRecord/:username",
-  Auth.Authorize(),
-  (req, res) => {
-    RestaurantsService.FetchUserRecord(req, res);
-  }
-);
-
-RestaurantController.put(
-  "/updateRestaurantRecord",
-  Auth.Authorize(),
-  (req, res) => {
-    RestaurantsService.UpdateRestaurantRecord(req, res);
-  }
-);
-
 export default RestaurantController;
