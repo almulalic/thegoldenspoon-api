@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { UserRestaurantRecord } from "../../Models/Entities";
 import { classToPlain } from "class-transformer";
 import { createQueryBuilder, getConnection } from "typeorm";
 import { IRestaurantRecord } from "../../Common/Interfaces/IRestaurantRecord";
@@ -19,7 +18,7 @@ class RestaurantService implements IRestaurantRecord {
           .getOne()
       ) as any;
 
-      res.json(userDataResponse.userrestaurantrecords);
+      return res.json(userDataResponse.userrestaurantrecords);
     } catch (err) {
       console.log(err);
       res.sendStatus(400);
@@ -72,9 +71,7 @@ class RestaurantService implements IRestaurantRecord {
   };
 
   public ModifyRestaurantRecord = (body, res) => {
-    UserRestaurantRecord.findOne({
-      where: { username: body.username },
-    }).then((userRecordResponse) => {});
+    res.sendStatus(501);
   };
 }
 
