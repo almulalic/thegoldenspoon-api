@@ -32,7 +32,7 @@ IdentityController.post("/resetPassword", Auth.Authorize(), (req, res) => {
 });
 
 IdentityController.get("/resetPasswordConfirmation/:token", (req, res) => {
-  IdentityService.ResetPasswordConfim(req.params.token, req.body, res);
+  IdentityService.ResetPasswordConfirm(req.params.token, req.body, res);
 });
 
 IdentityController.get("/isUniqueEmail/:email", (req, res) => {
