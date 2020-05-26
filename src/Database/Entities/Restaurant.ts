@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   Entity,
   Index,
@@ -7,47 +6,46 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  OneToOne,
 } from "typeorm";
 import { Restaurantcategory } from "./Restaurantcategory";
-import { Restaurantsubcategory } from "./Restaurantsubcategory";
 import { Country } from "./Country";
+import { Restaurantsubcategory } from "./Restaurantsubcategory";
 import { Userrestaurantrecord } from "./Userrestaurantrecord";
 
 @Index("fk_restaurant_category", ["categoryId"], {})
 @Index("fk_restaurant_subcategory", ["subcategoryId"], {})
 @Index("CountryId", ["countryId"], {})
 @Entity("restaurant", { schema: "heroku_7cf11dd7d1ff7dc" })
-export class Restaurant extends BaseEntity {
+export class Restaurant {
   @PrimaryGeneratedColumn({ type: "smallint", name: "Id" })
-  id?: number;
+  id: number;
 
   @Column("varchar", { name: "Name", length: 120 })
-  name?: string;
+  name: string;
 
   @Column("tinyint", { name: "SubcategoryId" })
-  subcategoryId?: number;
+  subcategoryId: number;
 
   @Column("tinyint", { name: "CategoryId" })
-  categoryId?: number;
+  categoryId: number;
 
   @Column("varchar", { name: "CountryId", nullable: true, length: 2 })
-  countryId?: string | null;
+  countryId: string | null;
 
   @Column("varchar", { name: "Adress", nullable: true, length: 60 })
-  adress?: string | null;
+  adress: string | null;
 
   @Column("varchar", { name: "Image", nullable: true, length: 164 })
-  image?: string | null;
+  image: string | null;
 
   @Column("datetime", { name: "Created" })
-  created?: Date;
+  created: Date;
 
   @Column("timestamp", {
     name: "LastModified",
     default: () => "CURRENT_TIMESTAMP",
   })
-  lastModified?: Date;
+  lastModified: Date;
 
   @ManyToOne(
     () => Restaurantcategory,
@@ -55,7 +53,14 @@ export class Restaurant extends BaseEntity {
     { onDelete: "RESTRICT", onUpdate: "RESTRICT" }
   )
   @JoinColumn([{ name: "CategoryId", referencedColumnName: "id" }])
-  category?: Restaurantcategory;
+  category: Restaurantcategory;
+
+  @ManyToOne(() => Country, (country) => country.restaurants, {
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  })
+  @JoinColumn([{ name: "CountryId", referencedColumnName: "id" }])
+  country: Country;
 
   @ManyToOne(
     () => Restaurantsubcategory,
@@ -63,18 +68,11 @@ export class Restaurant extends BaseEntity {
     { onDelete: "RESTRICT", onUpdate: "RESTRICT" }
   )
   @JoinColumn([{ name: "SubcategoryId", referencedColumnName: "id" }])
-  subcategory?: Restaurantsubcategory;
+  subcategory: Restaurantsubcategory;
 
-  @ManyToOne(() => Country, (country) => country.restaurants, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  })
-  @JoinColumn([{ name: "CountryId", referencedColumnName: "id" }])
-  country?: Country;
-
-  @OneToOne(
+  @OneToMany(
     () => Userrestaurantrecord,
     (userrestaurantrecord) => userrestaurantrecord.restaurant
   )
-  userrestaurantrecords?: Userrestaurantrecord[];
+  userrestaurantrecords: Userrestaurantrecord[];
 }

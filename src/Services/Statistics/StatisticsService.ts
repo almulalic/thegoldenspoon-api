@@ -1,11 +1,12 @@
 import _ from "lodash";
 import { createQueryBuilder } from "typeorm";
 import { classToPlain } from "class-transformer";
-import { RoundTwoDecimals } from "../../Shared/helpers";
+import { RoundTwoDecimals } from "../../Shared/Helpers";
+import { IStatisticsService } from "../../Common/Interfaces/IStatisticsService";
 
 require("dotenv").config();
 
-class StatisticsService {
+class StatisticsService implements IStatisticsService {
   public FetchUserStatistics = async (req, res) => {
     try {
       let userDataResponse = classToPlain(
@@ -42,7 +43,6 @@ class StatisticsService {
         totalFavorites: _.filter(
           userDataResponse.userrestaurantrecords,
           (x) => {
-            console.log(x);
             if (x.isFavorite) return x;
           }
         ).length,

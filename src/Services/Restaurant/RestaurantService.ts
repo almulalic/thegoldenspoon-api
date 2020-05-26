@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { createQueryBuilder } from "typeorm";
+import { createQueryBuilder, getConnection } from "typeorm";
 import { IRestaurantService } from "../../Common/Interfaces/IRestaurantService";
 
 class RestaurantService implements IRestaurantService {
@@ -25,6 +25,49 @@ class RestaurantService implements IRestaurantService {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  public FetchNewRestaraunts = async (res) => {
+    try {
+      res.json(
+        await createQueryBuilder("Restaurants")
+          .orderBy("Restaurants.CreatedAt", "DESC")
+          .getMany()
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  public FetchResorts = async (res) => {
+    try {
+      res.json(await createQueryBuilder("Resort").getMany());
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  public FetchThemeParks = async (res) => {
+    try {
+      res.json(
+        await createQueryBuilder("Themepark")
+          .orderBy("Restaurants.CreatedAt", "DESC")
+          .getMany()
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  public AddNewRestaurant = async (req, res) => {
+    await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into("Restaurants")
+      .values(req.body)
+      .execute();
+
+    return res.send("Restaurant successfully created");
   };
 }
 

@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { classToPlain } from "class-transformer";
 import { createQueryBuilder } from "typeorm";
-import { RoundTwoDecimals } from "../../Shared/helpers";
+import { RoundTwoDecimals } from "../../Shared/Helpers";
 
 export interface ILeaderboardService {
   FetchOverallLeaderboard(req, res);
