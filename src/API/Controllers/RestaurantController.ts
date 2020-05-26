@@ -23,4 +23,16 @@ RestaurantController.get("/fetchRestaurants", Auth.Authorize(), (req, res) => {
   RestaurantsService.FetchRestaurants(res);
 });
 
+RestaurantController.get(
+  "/fetchNewRestaurants",
+  Auth.Authorize(),
+  (req, res) => {
+    RestaurantsService.FetchNewRestaraunts(res);
+  }
+);
+
+RestaurantController.put("/addNewRestaurant", Auth.Authorize(), (req, res) => {
+  RestaurantsService.AddNewRestaurant(req, res);
+});
+
 export default RestaurantController;

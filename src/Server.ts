@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import { createConnection } from "typeorm";
 
 import UserController from "./API/Controllers/UserController";
+import LookupController from "./API/Controllers/LookupController";
 import IdentityController from "./API/Controllers/IdentityController";
 import RestaurantController from "./API/Controllers/RestaurantController";
 import StatisticsController from "./API/Controllers/StatisticsController";
@@ -25,6 +26,7 @@ createConnection()
     // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     app.use("/user", UserController);
+    app.use("/lookup", LookupController);
     app.use("/identity", IdentityController);
     app.use("/restaurant", RestaurantController);
     app.use("/statistics", StatisticsController);

@@ -230,7 +230,6 @@ class IdentityService implements IIdentityService {
 
   public LoginUser = async (body, res) => {
     let userResponse;
-
     try {
       userResponse = await createQueryBuilder("User")
         .innerJoinAndSelect("User.identity", "Identity")
@@ -244,6 +243,7 @@ class IdentityService implements IIdentityService {
       });
     }
 
+    console.log(userResponse);
     if (userResponse) {
       if (!userResponse.identity.isConfirmed)
         return res.json(LoginEnums.AccountNotConfirmed);
@@ -411,7 +411,7 @@ class IdentityService implements IIdentityService {
   public ValidateToken = async (token, res) => {
     let identityResponse;
 
-    const decodedToken = jwt.verify(token, process.env.PASSWORD_RESET_SECRET);
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     try {
       identityResponse = await createQueryBuilder("Identity")
