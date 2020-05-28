@@ -5,12 +5,13 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  DeleteDateColumn,
 } from "typeorm";
 import { Resort } from "./Resort";
 import { Themepark } from "./Themepark";
 
-@Index("fk_restaurant_resort", ["resortId"], {})
 @Index("fk_restaurant_themePark", ["themeParkId"], {})
+@Index("fk_restaurant_resort", ["resortId"], {})
 @Entity("restaurants", { schema: "heroku_7cf11dd7d1ff7dc" })
 export class Restaurants {
   @PrimaryGeneratedColumn({ type: "smallint", name: "Id" })
@@ -46,8 +47,8 @@ export class Restaurants {
   @Column("tinyint", { name: "Availability" })
   availability: number;
 
-  @Column("tinyint", { name: "Cusine", nullable: true })
-  cusine: number | null;
+  @Column("varchar", { name: "Cusine", nullable: true, length: 180 })
+  cusine: string | null;
 
   @Column("tinyint", { name: "IsGoldenSpoonPoint", width: 1 })
   isGoldenSpoonPoint: boolean;
@@ -66,6 +67,9 @@ export class Restaurants {
     default: () => "CURRENT_TIMESTAMP",
   })
   modifiedAt: Date;
+
+  @DeleteDateColumn({ name: "ArchivedAt", nullable: true, select: false })
+  archivedAt: Date;
 
   @ManyToOne(() => Resort, (resort) => resort.restaurants, {
     onDelete: "RESTRICT",

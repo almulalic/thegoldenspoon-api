@@ -31,8 +31,32 @@ RestaurantController.get(
   }
 );
 
+RestaurantController.get(
+  "/fetchRestaurant/:id",
+  Auth.Authorize(),
+  (req, res) => {
+    RestaurantsService.FetchRestaurant(req, res);
+  }
+);
+
 RestaurantController.put("/addNewRestaurant", Auth.Authorize(), (req, res) => {
   RestaurantsService.AddNewRestaurant(req, res);
 });
+
+RestaurantController.put(
+  "/modifyRestaurant/:id",
+  Auth.Authorize(),
+  (req, res) => {
+    RestaurantsService.AddNewRestaurant(req, res);
+  }
+);
+
+RestaurantController.delete(
+  "/removeRestaurant/:id",
+  Auth.Authorize(),
+  (req, res) => {
+    RestaurantsService.RemoveRestaurant(req, res);
+  }
+);
 
 export default RestaurantController;
