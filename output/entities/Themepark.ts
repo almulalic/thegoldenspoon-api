@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Restaurants } from "../../src/Database/Entities/Restaurants";
+import { Restaurants } from "./Restaurants";
 import { Resort } from "./Resort";
 
 @Index("FK_themepark_resort", ["resortId"], {})

@@ -7,6 +7,14 @@ const LookupController = express.Router();
 
 LookupController.use(cors());
 
+LookupController.get("/FetchResorts", Auth.Authorize(), (req, res) => {
+  LookupsService.FetchResorts(res);
+});
+
+LookupController.get("/FetchThemeParks", Auth.Authorize(), (req, res) => {
+  LookupsService.FetchThemeParks(res);
+});
+
 LookupController.get("/FetchRestaurantTypes", Auth.Authorize(), (req, res) => {
   LookupsService.FetchRestaurantTypes(res);
 });

@@ -88,10 +88,10 @@ class RestaurantService implements IRestaurantService {
         .values(req.body)
         .execute();
 
-      return res.send("Restaurant successfully created");
+      return res.json("Restaurant successfully created");
     } catch (err) {
       console.log(err);
-      res.sendStatus(400);
+      res.json(1);
     }
   };
 
@@ -99,15 +99,15 @@ class RestaurantService implements IRestaurantService {
     try {
       await getConnection()
         .createQueryBuilder()
-        .insert()
-        .into("Restaurants")
-        .values(req.body)
+        .update(Restaurants)
+        .set(req.body)
+        .where("Restaurants.Id = :id", { id: req.body.id })
         .execute();
 
-      return res.send("Restaurant successfully modified");
+      return res.json("Restaurant successfully modified");
     } catch (err) {
       console.log(err);
-      res.sendStatus(400);
+      res.json(1);
     }
   };
 
@@ -118,7 +118,10 @@ class RestaurantService implements IRestaurantService {
         .andWhere("Restaurants.ArchivedAt IS NULL")
         .getOne();
 
-      if (!response) res.json(1);
+      if (!response) {
+        res.json(1);
+        return;
+      }
 
       await getConnection()
         .createQueryBuilder()
@@ -130,7 +133,7 @@ class RestaurantService implements IRestaurantService {
       return res.send("Restaurant successfully removed");
     } catch (err) {
       console.log(err);
-      res.sendStatus(400);
+      res.json(1);
     }
   };
 }
