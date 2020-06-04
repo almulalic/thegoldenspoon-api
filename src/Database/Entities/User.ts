@@ -8,9 +8,9 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Identity } from "../../../output/entities/Identity";
 import { Country } from "./Country";
-import { Userrestaurantrecord } from "../../../output/entities/Userrestaurantrecord";
+import { Identity } from "./Identity";
+import { Userrestaurantrecord } from "./Userrestaurantrecord";
 
 @Index("fk_users_identitiy", ["identityId"], {})
 @Index("CountryId", ["countryId"], {})
@@ -64,7 +64,7 @@ export class User {
   @Column("datetime", { name: "ArchivedAt", nullable: true })
   archivedAt: Date | null;
 
-  @OneToOne(() => Identity, (identity) => identity.user, {
+  @OneToOne(() => Identity, (identity) => identity.users, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
