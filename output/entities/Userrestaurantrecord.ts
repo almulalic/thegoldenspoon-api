@@ -6,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Restaurant } from "./Restaurant";
-import { User } from "./User";
+import { Restaurant } from "../../src/Database/Entities/Restaurant";
+import { User } from "../../src/Database/Entities/User";
 
 @Index("fk_userRecords_restaurant", ["restaurantId"], {})
 @Index("fk_userRecords_user", ["userId"], {})

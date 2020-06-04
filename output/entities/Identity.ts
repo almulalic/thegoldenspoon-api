@@ -1,5 +1,5 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./User";
+import { User } from "../../src/Database/Entities/User";
 
 @Entity("identity", { schema: "heroku_7cf11dd7d1ff7dc" })
 export class Identity {
