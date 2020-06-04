@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import Auth from "../../Auth/Auth";
-import RestaurantsService from "../../Services/RestaurantService/RestaurantsService";
+import RestaurantsService from "../../Services/Restaurant/RestaurantService";
 
 const RestaurantController = express.Router();
 
@@ -23,23 +23,35 @@ RestaurantController.get("/fetchRestaurants", Auth.Authorize(), (req, res) => {
   RestaurantsService.FetchRestaurants(res);
 });
 
-RestaurantController.get("/fetchUserRecord", Auth.Authorize(), (req, res) => {
-  RestaurantsService.FetchUserRecord(req, res);
-});
-
 RestaurantController.get(
-  "/fetchUserRecord/:username",
+  "/fetchNewRestaurants",
   Auth.Authorize(),
   (req, res) => {
-    RestaurantsService.FetchUserRecord(req, res);
+    RestaurantsService.FetchNewRestaraunts(res);
   }
 );
 
-RestaurantController.put(
-  "/updateRestaurantRecord",
+RestaurantController.get(
+  "/fetchRestaurant/:id",
   Auth.Authorize(),
   (req, res) => {
-    RestaurantsService.UpdateRestaurantRecord(req, res);
+    RestaurantsService.FetchRestaurant(req, res);
+  }
+);
+
+RestaurantController.put("/addNewRestaurant", Auth.Authorize(), (req, res) => {
+  RestaurantsService.AddNewRestaurant(req, res);
+});
+
+RestaurantController.put("/modifyRestaurant", Auth.Authorize(), (req, res) => {
+  RestaurantsService.ModifyRestaurant(req, res);
+});
+
+RestaurantController.delete(
+  "/removeRestaurant/:id",
+  Auth.Authorize(),
+  (req, res) => {
+    RestaurantsService.RemoveRestaurant(req, res);
   }
 );
 

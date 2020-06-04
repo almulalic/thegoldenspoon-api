@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import IdentityService from "../../Services/IdentityService/IdentityService";
 import Auth from "../../Auth/Auth";
+import IdentityService from "../../Services/Identity/IdentityService";
 
 const IdentityController = express.Router();
 
@@ -32,7 +32,7 @@ IdentityController.post("/resetPassword", Auth.Authorize(), (req, res) => {
 });
 
 IdentityController.get("/resetPasswordConfirmation/:token", (req, res) => {
-  IdentityService.ResetPasswordConfim(req.params.token, req.body, res);
+  IdentityService.ResetPasswordConfirm(req.params.token, req.body, res);
 });
 
 IdentityController.get("/isUniqueEmail/:email", (req, res) => {
