@@ -6,6 +6,8 @@ import {
   ManyToOne,
   OneToMany,
   DeleteDateColumn,
+  BaseEntity,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Menu } from "./Menu";
 import { Resort } from "./Resort";
@@ -14,8 +16,10 @@ import { Themepark } from "./Themepark";
 @Index("fk_restaurant_resort", ["resortId"], {})
 @Index("fk_restaurant_themePark", ["themeParkId"], {})
 @Entity("restaurants", { schema: "heroku_7cf11dd7d1ff7dc" })
-export class Restaurants {
-  @Column("bigint", { primary: true, name: "Id", default: () => "'0'" })
+export class Restaurants extends BaseEntity {
+  @PrimaryGeneratedColumn({
+    name: "Id",
+  })
   id: string;
 
   @Column("varchar", { name: "Name", length: 120 })

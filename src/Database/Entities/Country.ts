@@ -1,9 +1,9 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany, BaseEntity } from "typeorm";
 import { Restaurant } from "./Restaurant";
 import { User } from "./User";
 
 @Entity("country", { schema: "heroku_7cf11dd7d1ff7dc" })
-export class Country {
+export class Country extends BaseEntity {
   @Column("varchar", { primary: true, name: "id", length: 2 })
   id: string;
 
