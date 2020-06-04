@@ -7,6 +7,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  BaseEntity,
 } from "typeorm";
 import { Country } from "./Country";
 import { Identity } from "./Identity";
@@ -15,7 +16,7 @@ import { Userrestaurantrecord } from "./Userrestaurantrecord";
 @Index("fk_users_identitiy", ["identityId"], {})
 @Index("CountryId", ["countryId"], {})
 @Entity("user", { schema: "heroku_7cf11dd7d1ff7dc" })
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn({ type: "int", name: "Id" })
   id: number;
 
