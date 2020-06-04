@@ -7,10 +7,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Restaurantcategory } from "../../../output/entities/Restaurantcategory";
 import { Country } from "./Country";
-import { Restaurantsubcategory } from "../../../output/entities/Restaurantsubcategory";
-import { Userrestaurantrecord } from "../../../output/entities/Userrestaurantrecord";
+import { Restaurantcategory } from "./Restaurantcategory";
+import { Restaurantsubcategory } from "./Restaurantsubcategory";
+import { Userrestaurantrecord } from "./Userrestaurantrecord";
 
 @Index("fk_restaurant_category", ["categoryId"], {})
 @Index("fk_restaurant_subcategory", ["subcategoryId"], {})
