@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Restaurant } from "./Restaurant";
+import { Restaurant } from "../../src/Database/Entities/Restaurant";
 import { Restaurantsubcategory } from "./Restaurantsubcategory";
 
 @Entity("restaurantcategory", { schema: "heroku_7cf11dd7d1ff7dc" })

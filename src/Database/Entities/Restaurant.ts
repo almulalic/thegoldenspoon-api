@@ -7,9 +7,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Restaurantcategory } from "./Restaurantcategory";
-import { Restaurantsubcategory } from "./Restaurantsubcategory";
-import { Userrestaurantrecord } from "./Userrestaurantrecord";
+import { Restaurantcategory } from "../../../output/entities/Restaurantcategory";
+import { Country } from "./Country";
+import { Restaurantsubcategory } from "../../../output/entities/Restaurantsubcategory";
+import { Userrestaurantrecord } from "../../../output/entities/Userrestaurantrecord";
 
 @Index("fk_restaurant_category", ["categoryId"], {})
 @Index("fk_restaurant_subcategory", ["subcategoryId"], {})
@@ -27,6 +28,9 @@ export class Restaurant {
 
   @Column("tinyint", { name: "CategoryId" })
   categoryId: number;
+
+  @Column("varchar", { name: "CountryId", nullable: true, length: 2 })
+  countryId: string | null;
 
   @Column("varchar", { name: "Adress", nullable: true, length: 60 })
   adress: string | null;
@@ -50,6 +54,13 @@ export class Restaurant {
   )
   @JoinColumn([{ name: "CategoryId", referencedColumnName: "id" }])
   category: Restaurantcategory;
+
+  @ManyToOne(() => Country, (country) => country.restaurants, {
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  })
+  @JoinColumn([{ name: "CountryId", referencedColumnName: "id" }])
+  country: Country;
 
   @ManyToOne(
     () => Restaurantsubcategory,

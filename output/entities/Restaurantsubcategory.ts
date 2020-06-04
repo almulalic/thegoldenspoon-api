@@ -1,4 +1,3 @@
-import {
   Column,
   Entity,
   Index,
@@ -7,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Restaurant } from "./Restaurant";
+import { Restaurant } from "../../src/Database/Entities/Restaurant";
 import { Restaurantcategory } from "./Restaurantcategory";
 
 @Index("fk_subcategory_category", ["categoryId"], {})

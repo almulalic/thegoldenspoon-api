@@ -1,89 +1,86 @@
 import {
-  BaseEntity,
   Column,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
   OneToOne,
-  DeleteDateColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm";
-import { Identity } from "./Identity";
+import { Identity } from "../../../output/entities/Identity";
 import { Country } from "./Country";
-import { Userrestaurantrecord } from "./Userrestaurantrecord";
+import { Userrestaurantrecord } from "../../../output/entities/Userrestaurantrecord";
 
 @Index("fk_users_identitiy", ["identityId"], {})
 @Index("CountryId", ["countryId"], {})
 @Entity("user", { schema: "heroku_7cf11dd7d1ff7dc" })
-export class User extends BaseEntity {
+export class User {
   @PrimaryGeneratedColumn({ type: "int", name: "Id" })
-  id?: number;
+  id: number;
 
   @Column("varchar", { name: "FirstName", length: 20 })
-  firstName?: string;
+  firstName: string;
 
   @Column("varchar", { name: "MiddleName", nullable: true, length: 20 })
-  middleName?: string | null;
+  middleName: string | null;
 
   @Column("varchar", { name: "LastName", length: 20 })
-  lastName?: string;
+  lastName: string;
 
   @Column("varchar", { name: "Username", nullable: true, length: 20 })
-  username?: string | null;
+  username: string | null;
 
   @Column("date", { name: "BornOn" })
-  bornOn?: Date;
+  bornOn: string;
 
   @Column("tinyint", { name: "Sex", width: 1 })
-  sex?: boolean;
+  sex: boolean;
 
   @Column("varchar", { name: "CountryId", nullable: true, length: 2 })
-  countryId?: string | null;
+  countryId: string | null;
 
   @Column("varchar", { name: "Adress", nullable: true, length: 60 })
-  adress?: string | null;
+  adress: string | null;
 
-  @Column("int", { name: "IdentityId", select: false })
-  identityId?: number;
+  @Column("int", { name: "IdentityId", unique: true })
+  identityId: number;
 
   @Column("varchar", { name: "Avatar", nullable: true, length: 128 })
-  avatar?: string | null;
+  avatar: string | null;
 
-  @Column("tinyint", { name: "Role", select: false })
-  role?: number;
+  @Column("tinyint", { name: "Role" })
+  role: number;
 
-  @Column("datetime", { name: "Created", select: false })
-  created?: Date;
+  @Column("datetime", { name: "Created" })
+  created: Date;
 
   @Column("timestamp", {
     name: "ModifiedAt",
     default: () => "CURRENT_TIMESTAMP",
-    select: false,
   })
-  modifiedAt?: Date;
+  modifiedAt: Date;
 
-  @DeleteDateColumn({ name: "ArchivedAt", nullable: true, select: false })
-  archivedAt?: Date | null;
+  @Column("datetime", { name: "ArchivedAt", nullable: true })
+  archivedAt: Date | null;
 
-  @OneToOne(() => Identity, (identity) => identity.users, {
+  @OneToOne(() => Identity, (identity) => identity.user, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
   @JoinColumn([{ name: "IdentityId", referencedColumnName: "id" }])
-  identity?: Identity;
+  identity: Identity;
 
   @ManyToOne(() => Country, (country) => country.users, {
     onDelete: "RESTRICT",
     onUpdate: "RESTRICT",
   })
   @JoinColumn([{ name: "CountryId", referencedColumnName: "id" }])
-  country?: Country;
+  country: Country;
 
   @OneToMany(
     () => Userrestaurantrecord,
     (userrestaurantrecord) => userrestaurantrecord.user
   )
-  userrestaurantrecords?: Userrestaurantrecord[];
+  userrestaurantrecords: Userrestaurantrecord[];
 }
