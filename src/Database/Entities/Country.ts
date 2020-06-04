@@ -10,6 +10,9 @@ export class Country extends BaseEntity {
   @Column("text", { name: "name", nullable: true })
   name?: string | null;
 
+  @OneToMany(() => Restaurant, (restaurant) => restaurant.country)
+  restaurant?: Restaurant[];
+
   @OneToMany(() => User, (user) => user.country)
   users?: User[];
 }

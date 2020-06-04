@@ -55,7 +55,7 @@ export class Restaurant {
   @JoinColumn([{ name: "CategoryId", referencedColumnName: "id" }])
   category: Restaurantcategory;
 
-  @ManyToOne(() => Country, (country) => country.restaurants, {
+  @ManyToOne(() => Country, (country) => country.restaurant, {
     onDelete: "RESTRICT",
     onUpdate: "RESTRICT",
   })
