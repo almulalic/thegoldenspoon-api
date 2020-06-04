@@ -435,7 +435,13 @@ class IdentityService implements IIdentityService {
 
   public DecodeToken = async (token, res) => {
     let identityResponse;
-    const decodedToken = jwt.verify(token, process.env.PASSWORD_RESET_SECRET);
+    let decodedToken;
+
+    try {
+      decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      console.log(err);
+    }
 
     try {
       identityResponse = await createQueryBuilder("Identity")

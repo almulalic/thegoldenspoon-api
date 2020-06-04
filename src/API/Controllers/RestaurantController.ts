@@ -43,13 +43,9 @@ RestaurantController.put("/addNewRestaurant", Auth.Authorize(), (req, res) => {
   RestaurantsService.AddNewRestaurant(req, res);
 });
 
-RestaurantController.put(
-  "/modifyRestaurant/:id",
-  Auth.Authorize(),
-  (req, res) => {
-    RestaurantsService.AddNewRestaurant(req, res);
-  }
-);
+RestaurantController.put("/modifyRestaurant", Auth.Authorize(), (req, res) => {
+  RestaurantsService.ModifyRestaurant(req, res);
+});
 
 RestaurantController.delete(
   "/removeRestaurant/:id",

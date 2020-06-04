@@ -5,9 +5,8 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  DeleteDateColumn,
 } from "typeorm";
-import { Menu } from "./Menu";
+import { Menu } from "../../src/Database/Entities/Menu";
 import { Resort } from "./Resort";
 import { Themepark } from "./Themepark";
 
@@ -69,7 +68,7 @@ export class Restaurants {
   })
   modifiedAt: Date;
 
-  @DeleteDateColumn({ name: "ArchivedAt" })
+  @Column("datetime", { name: "ArchivedAt", nullable: true })
   archivedAt: Date | null;
 
   @OneToMany(() => Menu, (menu) => menu.restaurant)
