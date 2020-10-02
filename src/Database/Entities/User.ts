@@ -7,16 +7,16 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-  BaseEntity,
 } from "typeorm";
-import { Country } from "./Country";
 import { Identity } from "./Identity";
+import { Country } from "./Country";
 import { Userrestaurantrecord } from "./Userrestaurantrecord";
 
+@Index("IDX_23f7738f5b8a5cdf52f524a5db", ["identityId"], { unique: true })
 @Index("fk_users_identitiy", ["identityId"], {})
 @Index("CountryId", ["countryId"], {})
 @Entity("user", { schema: "heroku_7cf11dd7d1ff7dc" })
-export class User extends BaseEntity {
+export class User {
   @PrimaryGeneratedColumn({ type: "int", name: "Id" })
   id: number;
 
@@ -65,7 +65,7 @@ export class User extends BaseEntity {
   @Column("datetime", { name: "ArchivedAt", nullable: true })
   archivedAt: Date | null;
 
-  @OneToOne(() => Identity, (identity) => identity.users, {
+  @OneToOne(() => Identity, (identity) => identity.user, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })

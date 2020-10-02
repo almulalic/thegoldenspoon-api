@@ -1,48 +1,41 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  OneToOne,
-} from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 
 @Entity("identity", { schema: "heroku_7cf11dd7d1ff7dc" })
-export class Identity extends BaseEntity {
+export class Identity {
   @PrimaryGeneratedColumn({ type: "int", name: "Id" })
-  id?: number;
+  id: number;
 
   @Column("varchar", { name: "Email", length: 254 })
-  email?: string;
+  email: string;
 
   @Column("varchar", { name: "Username", length: 25 })
-  username?: string;
+  username: string;
 
   @Column("varchar", { name: "Password", length: 64 })
-  password?: string;
+  password: string;
 
   @Column("tinyint", { name: "IsConfirmed", width: 1 })
-  isConfirmed?: boolean;
+  isConfirmed: boolean;
 
   @Column("datetime", { name: "ConfirmedAt", nullable: true })
-  confirmedAt?: Date | null;
+  confirmedAt: Date | null;
 
   @Column("varchar", { name: "RefreshToken", nullable: true, length: 450 })
-  refreshToken?: string | null;
+  refreshToken: string | null;
 
   @Column("timestamp", {
     name: "LastModified",
     default: () => "CURRENT_TIMESTAMP",
   })
-  lastModified?: Date;
+  lastModified: Date;
 
   @Column("datetime", { name: "Created", default: () => "CURRENT_TIMESTAMP" })
-  created?: Date;
+  created: Date;
 
   @Column("datetime", { name: "ArchivedAt", nullable: true })
-  archivedAt?: Date | null;
+  archivedAt: Date | null;
 
   @OneToOne(() => User, (user) => user.identity)
-  users?: User[];
+  user: User;
 }

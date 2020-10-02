@@ -6,16 +6,13 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Restaurants } from "./Restaurants";
+import { Restaurant } from "./Restaurant";
 
 @Index("fk_menu_restaurant", ["restaurantId"], {})
 @Entity("menu", { schema: "heroku_7cf11dd7d1ff7dc" })
 export class Menu {
   @PrimaryGeneratedColumn({ type: "bigint", name: "Id" })
   id: string;
-
-  @Column("bigint", { name: "RestaurantId" })
-  restaurantId: string;
 
   @Column("tinyint", { name: "MealPeriod" })
   mealPeriod: number;
@@ -44,10 +41,13 @@ export class Menu {
   @Column("date", { name: "ArchivedAt", nullable: true })
   archivedAt: string | null;
 
-  @ManyToOne(() => Restaurants, (restaurants) => restaurants.menus, {
+  @Column("int", { name: "RestaurantId" })
+  restaurantId: number;
+
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.menus, {
     onDelete: "RESTRICT",
     onUpdate: "RESTRICT",
   })
   @JoinColumn([{ name: "RestaurantId", referencedColumnName: "id" }])
-  restaurant: Restaurants;
+  restaurant: Restaurant;
 }

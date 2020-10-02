@@ -7,29 +7,17 @@ const RestaurantController = express.Router();
 
 RestaurantController.use(cors());
 
-RestaurantController.get("/fetchCategories", Auth.Authorize(), (req, res) => {
-  RestaurantsService.FetchCategories(res);
+RestaurantController.get("/fetchResorts", Auth.Authorize(), (req, res) => {
+  RestaurantsService.FetchResorts(res);
 });
 
-RestaurantController.get(
-  "/fetchSubcategories",
-  Auth.Authorize(),
-  (req, res) => {
-    RestaurantsService.FetchSubcategories(res);
-  }
-);
+RestaurantController.get("/fetchThemeParks", Auth.Authorize(), (req, res) => {
+  RestaurantsService.FetchThemeParks(res);
+});
 
 RestaurantController.get("/fetchRestaurants", Auth.Authorize(), (req, res) => {
   RestaurantsService.FetchRestaurants(res);
 });
-
-RestaurantController.get(
-  "/fetchNewRestaurants",
-  Auth.Authorize(),
-  (req, res) => {
-    RestaurantsService.FetchNewRestaraunts(res);
-  }
-);
 
 RestaurantController.get(
   "/fetchRestaurant/:id",
