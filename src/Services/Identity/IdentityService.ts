@@ -243,7 +243,6 @@ class IdentityService implements IIdentityService {
       });
     }
 
-    console.log(userResponse);
     if (userResponse) {
       if (!userResponse.identity.isConfirmed)
         return res.json(LoginEnums.AccountNotConfirmed);

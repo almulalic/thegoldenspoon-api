@@ -18,7 +18,8 @@ class RestaurantService implements IRestaurantRecord {
           .getOne()
       ) as any;
 
-      return res.json(userDataResponse.userrestaurantrecords);
+      if (userDataResponse == undefined) res.json(0);
+      else return res.json(userDataResponse.userrestaurantrecords);
     } catch (err) {
       console.log(err);
       res.sendStatus(400);

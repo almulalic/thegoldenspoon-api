@@ -1,41 +1,14 @@
 import _ from "lodash";
 import { createQueryBuilder, getConnection } from "typeorm";
 import { IRestaurantService } from "../../Common/Interfaces/IRestaurantService";
-import { Restaurants } from "./../../Database/Entities/Restaurants";
+import { Restaurant } from "../../Database/Entities/Restaurant";
 
 class RestaurantService implements IRestaurantService {
-  public FetchCategories = async (res) => {
-    try {
-      return res.json(await createQueryBuilder("Restaurantcategory").getMany());
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(400);
-    }
-  };
-
-  public FetchSubcategories = async (res) => {
-    try {
-      res.json(await createQueryBuilder("Restaurantsubcategory").getMany());
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(400);
-    }
-  };
-
   public FetchRestaurants = async (res) => {
     try {
-      res.json(await createQueryBuilder("Restaurant").getMany());
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(400);
-    }
-  };
-
-  public FetchNewRestaraunts = async (res) => {
-    try {
       res.json(
-        await createQueryBuilder("Restaurants")
-          .orderBy("Restaurants.CreatedAt", "DESC")
+        await createQueryBuilder("Restaurant")
+          .orderBy("Restaurant.CreatedAt", "DESC")
           .getMany()
       );
     } catch (err) {
@@ -55,11 +28,7 @@ class RestaurantService implements IRestaurantService {
 
   public FetchThemeParks = async (res) => {
     try {
-      res.json(
-        await createQueryBuilder("Themepark")
-          .orderBy("Restaurants.CreatedAt", "DESC")
-          .getMany()
-      );
+      res.json(await createQueryBuilder("Themepark").getMany());
     } catch (err) {
       console.log(err);
       res.sendStatus(400);
@@ -68,8 +37,8 @@ class RestaurantService implements IRestaurantService {
 
   public FetchRestaurant = async (req, res) => {
     try {
-      let result = await createQueryBuilder("Restaurants")
-        .where("Restaurants.Id = :id", { id: req.params.id })
+      let result = await createQueryBuilder("Restaurant")
+        .where("Restaurant.Id = :id", { id: req.params.id })
         .getOne();
 
       res.json(result ?? 1);
@@ -84,7 +53,7 @@ class RestaurantService implements IRestaurantService {
       await getConnection()
         .createQueryBuilder()
         .insert()
-        .into("Restaurants")
+        .into("Restaurant")
         .values(req.body)
         .execute();
 
@@ -99,7 +68,7 @@ class RestaurantService implements IRestaurantService {
     try {
       await getConnection()
         .createQueryBuilder()
-        .update(Restaurants)
+        .update(Restaurant)
         .set(req.body)
         .where("Restaurants.Id = :id", { id: req.body.id })
         .execute();
@@ -125,7 +94,7 @@ class RestaurantService implements IRestaurantService {
 
       await getConnection()
         .createQueryBuilder()
-        .update(Restaurants)
+        .update(Restaurant)
         .set({ archivedAt: new Date() })
         .where("Restaurants.Id = :id", { id: req.params.id })
         .execute();

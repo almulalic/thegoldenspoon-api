@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Restaurants } from "./Restaurants";
+import { Restaurant } from "./Restaurant";
 import { Themepark } from "./Themepark";
 
 @Entity("resort", { schema: "heroku_7cf11dd7d1ff7dc" })
@@ -25,8 +25,8 @@ export class Resort {
   })
   lastModified: Date;
 
-  @OneToMany(() => Restaurants, (restaurants) => restaurants.resort)
-  restaurants: Restaurants[];
+  @OneToMany(() => Restaurant, (restaurant) => restaurant.resort)
+  restaurants: Restaurant[];
 
   @OneToMany(() => Themepark, (themepark) => themepark.resort)
   themeparks: Themepark[];

@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Restaurants } from "./Restaurants";
+import { Restaurant } from "./Restaurant";
 import { Resort } from "./Resort";
 
 @Index("FK_themepark_resort", ["resortId"], {})
@@ -31,8 +31,8 @@ export class Themepark {
   })
   lastmodified: Date;
 
-  @OneToMany(() => Restaurants, (restaurants) => restaurants.themePark)
-  restaurants: Restaurants[];
+  @OneToMany(() => Restaurant, (restaurant) => restaurant.themePark)
+  restaurants: Restaurant[];
 
   @ManyToOne(() => Resort, (resort) => resort.themeparks, {
     onDelete: "RESTRICT",
