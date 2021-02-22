@@ -1,7 +1,7 @@
-import { EmailEnums } from "../Common/Enumerations/Email/Service/EmailEnums";
 import jwt from "jsonwebtoken";
 import sgMail from "@sendgrid/mail";
 import { IEmailService } from "../Common/Interfaces/IEmailService";
+import { EmailEnums } from "../Common/Enumerations/Email/Service/EmailEnums";
 
 require("dotenv").config();
 
@@ -9,15 +9,10 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 class EmailService implements IEmailService {
   public SendConfirmationEmail = async (id, body) => {
-    const confirmationToken = jwt.sign(
-      { userIdentityId: id },
-      process.env.EMAIL_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
-    const url =
-      process.env.APP_URL + `/accountConfirmation/${confirmationToken}`;
+    const confirmationToken = jwt.sign({ userIdentityId: id }, process.env.EMAIL_SECRET, {
+      expiresIn: "1d",
+    });
+    const url = process.env.APP_URL + `/accountConfirmation/${confirmationToken}`;
 
     sgMail
       .send({
@@ -36,15 +31,10 @@ class EmailService implements IEmailService {
   };
 
   public ResendConfirmationEmail = async (userData) => {
-    const confirmationToken = jwt.sign(
-      { userIdentityId: userData.id },
-      process.env.EMAIL_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
-    const url =
-      process.env.APP_URL + `/accountConfirmation/${confirmationToken}`;
+    const confirmationToken = jwt.sign({ userIdentityId: userData.id }, process.env.EMAIL_SECRET, {
+      expiresIn: "1d",
+    });
+    const url = process.env.APP_URL + `/accountConfirmation/${confirmationToken}`;
 
     sgMail
       .send({
@@ -63,16 +53,10 @@ class EmailService implements IEmailService {
   };
 
   public SendResetPasswordEmail = async (userData) => {
-    const confirmationToken = jwt.sign(
-      { userIdentityId: userData.id },
-      process.env.PASSWORD_RESET_SECRET,
-      {
-        expiresIn: "12h",
-      }
-    );
-    const url =
-      process.env.APP_URL +
-      `/identity/resetPasswordConfirmation/${confirmationToken}`;
+    const confirmationToken = jwt.sign({ userIdentityId: userData.id }, process.env.PASSWORD_RESET_SECRET, {
+      expiresIn: "12h",
+    });
+    const url = process.env.APP_URL + `/identity/resetPasswordConfirmation/${confirmationToken}`;
 
     sgMail
       .send({
