@@ -20,7 +20,7 @@
     "babel-preset-env": "^1.7.0",
     "nodemon": "^2.0.3",
     "ts-node": "^3.3.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.9.9"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.0.1",
