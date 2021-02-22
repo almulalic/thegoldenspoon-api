@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Menu } from "./Menu";
 import { Resort } from "./Resort";
 import { Themepark } from "./Themepark";
@@ -14,7 +6,7 @@ import { Userrestaurantrecord } from "./Userrestaurantrecord";
 
 @Index("fk_restaurant_resort", ["resortId"], {})
 @Index("fk_restaurant_themePark", ["themeParkId"], {})
-@Entity("restaurant", { schema: "heroku_7cf11dd7d1ff7dc" })
+@Entity("restaurant", { schema: "heroku_124147cbc6e7932" })
 export class Restaurant {
   @PrimaryGeneratedColumn({ type: "int", name: "Id" })
   id: number;
@@ -90,9 +82,6 @@ export class Restaurant {
   @JoinColumn([{ name: "ThemeParkId", referencedColumnName: "id" }])
   themePark: Themepark;
 
-  @OneToMany(
-    () => Userrestaurantrecord,
-    (userrestaurantrecord) => userrestaurantrecord.restaurant
-  )
+  @OneToMany(() => Userrestaurantrecord, (userrestaurantrecord) => userrestaurantrecord.restaurant)
   userrestaurantrecords: Userrestaurantrecord[];
 }

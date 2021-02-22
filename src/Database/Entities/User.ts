@@ -12,10 +12,8 @@ import { Identity } from "./Identity";
 import { Country } from "./Country";
 import { Userrestaurantrecord } from "./Userrestaurantrecord";
 
-@Index("IDX_23f7738f5b8a5cdf52f524a5db", ["identityId"], { unique: true })
 @Index("fk_users_identitiy", ["identityId"], {})
-@Index("CountryId", ["countryId"], {})
-@Entity("user", { schema: "heroku_7cf11dd7d1ff7dc" })
+@Entity("user", { schema: "heroku_124147cbc6e7932" })
 export class User {
   @PrimaryGeneratedColumn({ type: "int", name: "Id" })
   id: number;
@@ -79,9 +77,6 @@ export class User {
   @JoinColumn([{ name: "CountryId", referencedColumnName: "id" }])
   country: Country;
 
-  @OneToMany(
-    () => Userrestaurantrecord,
-    (userrestaurantrecord) => userrestaurantrecord.user
-  )
+  @OneToMany(() => Userrestaurantrecord, (userrestaurantrecord) => userrestaurantrecord.user)
   userrestaurantrecords: Userrestaurantrecord[];
 }

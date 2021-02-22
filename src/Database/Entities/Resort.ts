@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Restaurant } from "./Restaurant";
 import { Themepark } from "./Themepark";
 
-@Entity("resort", { schema: "heroku_7cf11dd7d1ff7dc" })
+@Entity("resort", { schema: "heroku_124147cbc6e7932" })
 export class Resort {
   @PrimaryGeneratedColumn({ type: "tinyint", name: "Id" })
   id: number;
