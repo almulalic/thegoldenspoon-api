@@ -1,17 +1,9 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Restaurant } from "./Restaurant";
 import { Resort } from "./Resort";
 
 @Index("FK_themepark_resort", ["resortId"], {})
-@Entity("themepark", { schema: "heroku_7cf11dd7d1ff7dc" })
+@Entity("themepark", { schema: "heroku_124147cbc6e7932" })
 export class Themepark {
   @PrimaryGeneratedColumn({ type: "tinyint", name: "id" })
   id: number;

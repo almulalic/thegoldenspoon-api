@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany } from "typeorm";
 import { User } from "./User";
 
-@Entity("country", { schema: "heroku_7cf11dd7d1ff7dc" })
+@Entity("country", { schema: "heroku_124147cbc6e7932" })
 export class Country {
   @Column("varchar", { primary: true, name: "id", length: 2 })
   id: string;

@@ -1,7 +1,7 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 
-@Entity("identity", { schema: "heroku_7cf11dd7d1ff7dc" })
+@Entity("identity", { schema: "heroku_124147cbc6e7932" })
 export class Identity {
   @PrimaryGeneratedColumn({ type: "int", name: "Id" })
   id: number;
@@ -30,7 +30,7 @@ export class Identity {
   })
   lastModified: Date;
 
-  @Column("datetime", { name: "Created", default: () => "CURRENT_TIMESTAMP" })
+  @Column("datetime", { name: "Created" })
   created: Date;
 
   @Column("datetime", { name: "ArchivedAt", nullable: true })

@@ -6,7 +6,7 @@
   "username": "b2a57ea95ed4b0",
   "password": "943b8258",
   "database": "heroku_124147cbc6e7932",
-  "synchronize": true,
+  "synchronize": false,
   "logging": true,
   "entities": ["src/Database/Entities/**/*.ts"],
   "migrations": ["src/Database/Migrations/**/*.ts"],

@@ -1,16 +1,9 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Restaurant } from "./Restaurant";
 import { User } from "./User";
 
 @Index("fk_userRecords_user", ["userId"], {})
-@Entity("userrestaurantrecord", { schema: "heroku_7cf11dd7d1ff7dc" })
+@Entity("userrestaurantrecord", { schema: "heroku_124147cbc6e7932" })
 export class Userrestaurantrecord {
   @PrimaryGeneratedColumn({ type: "int", name: "Id" })
   id: number;
@@ -39,11 +32,10 @@ export class Userrestaurantrecord {
   })
   lastModified: Date;
 
-  @ManyToOne(
-    () => Restaurant,
-    (restaurant) => restaurant.userrestaurantrecords,
-    { onDelete: "RESTRICT", onUpdate: "RESTRICT" }
-  )
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.userrestaurantrecords, {
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  })
   @JoinColumn([{ name: "RestaurantId", referencedColumnName: "id" }])
   restaurant: Restaurant;
 
