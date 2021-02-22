@@ -15,6 +15,7 @@ import RestaurantRecordController from "./API/Controllers/RestaurantRecordContro
 
 createConnection()
   .then(async (connection) => {
+    await connection.synchronize();
     const app = express();
     let port = process.env.PORT || 5000;
 
@@ -34,15 +35,9 @@ createConnection()
     app.use("/restaurantRecord", RestaurantRecordController);
 
     app.listen(port, async () => {
-      console.log(
-        "Successfully loaded Database table: " +
-          connection.entityMetadatas[0].schema
-      );
-      console.log(
-        "Last migration: " +
-          connection.migrations[connection.migrations.length - 1].name
-      );
-      console.log("Server is running on port: " + port);
+      // console.log("Successfully loaded Database table: " + connection.entityMetadatas[0].schema);
+      // console.log("Last migration: " + connection.migrations[connection.migrations.length - 1].name);
+      // console.log("Server is running on port: " + port);
     });
   })
   .catch((error) => console.log(error));
