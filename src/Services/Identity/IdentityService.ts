@@ -77,12 +77,7 @@ class IdentityService implements IIdentityService {
 
       userData.identityId = createResponse.identifiers[0].id;
       try {
-        await getConnection()
-          .createQueryBuilder()
-          .insert()
-          .into("User")
-          .values(userData)
-          .execute();
+        await getConnection().createQueryBuilder().insert().into("User").values(userData).execute();
       } catch (err) {
         console.log(err);
         await getConnection()
@@ -96,10 +91,7 @@ class IdentityService implements IIdentityService {
         });
       }
 
-      const confirmationEmailSuccess = EmailService.SendConfirmationEmail(
-        userData.identityId,
-        body
-      );
+      const confirmationEmailSuccess = EmailService.SendConfirmationEmail(userData.identityId, body);
       if (confirmationEmailSuccess)
         return res.json({
           status: RegisterEnums.RegisteredNeedsConfirmation,
@@ -126,16 +118,11 @@ class IdentityService implements IIdentityService {
     }
 
     if (identityResponse) {
-      if (identityResponse.isConfirmed)
-        return res.json(ResendConfirmationEnums.UserAlreadyConfirmed);
+      if (identityResponse.isConfirmed) return res.json(ResendConfirmationEnums.UserAlreadyConfirmed);
 
-      const confirmationEmailSuccess = EmailService.ResendConfirmationEmail(
-        identityResponse
-      );
+      const confirmationEmailSuccess = EmailService.ResendConfirmationEmail(identityResponse);
       if (confirmationEmailSuccess)
-        return res.json(
-          ResendConfirmationEnums.ConfirmationEmailSentSuccessfully
-        );
+        return res.json(ResendConfirmationEnums.ConfirmationEmailSentSuccessfully);
       else return res.json(ResendConfirmationEnums.FailedToGenerateToken);
     } else {
       return res.json(ResendConfirmationEnums.UserNotFound);
@@ -157,11 +144,9 @@ class IdentityService implements IIdentityService {
     }
 
     if (identityResponse) {
-      if (identityResponse.isConfirmed)
-        return res.json(ResendConfirmationEnums.UserAlreadyConfirmed);
+      if (identityResponse.isConfirmed) return res.json(ResendConfirmationEnums.UserAlreadyConfirmed);
 
-      if (identityResponse.email == body.newEmail)
-        return res.json(ChangeConfirmationEnums.EmailMustBeNew);
+      if (identityResponse.email == body.newEmail) return res.json(ChangeConfirmationEnums.EmailMustBeNew);
 
       if (bcrypt.compareSync(body.password, identityResponse.password)) {
         try {
@@ -173,9 +158,7 @@ class IdentityService implements IIdentityService {
               id: identityResponse,
             })
             .execute();
-          return res.json(
-            ChangeConfirmationEnums.ConfirmationEmailSentSuccessfully
-          );
+          return res.json(ChangeConfirmationEnums.ConfirmationEmailSentSuccessfully);
         } catch (err) {
           console.log(err);
           return res.json(ChangeConfirmationEnums.InternalServerError);
@@ -190,12 +173,19 @@ class IdentityService implements IIdentityService {
     let decodedToken;
     let identityResponse;
 
-    decodedToken = jwt.verify(token, process.env.EMAIL_SECRET);
+    try {
+      decodedToken = jwt.verify(token, process.env.EMAIL_SECRET);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send({
+        status: ResendConfirmationEnums.InternalServerError,
+      });
+    }
 
     try {
       identityResponse = await createQueryBuilder("Identity")
-        .where("Identity.username =:username", {
-          username: decodedToken.username,
+        .where("Identity.id =:id", {
+          id: decodedToken.userIdentityId,
         })
         .getOne();
     } catch (err) {
@@ -213,14 +203,12 @@ class IdentityService implements IIdentityService {
         await getConnection()
           .createQueryBuilder()
           .update("Identity")
-          .set({ isConfirmed: 1, dateConfimed: new Date() } as any)
+          .set({ isConfirmed: 1, confirmedAt: new Date() } as any)
           .where("Identity.id = :id", {
-            id: identityResponse,
+            id: identityResponse.id,
           })
           .execute();
-        return res.json(
-          ChangeConfirmationEnums.ConfirmationEmailSentSuccessfully
-        );
+        return res.json(ChangeConfirmationEnums.ConfirmationEmailSentSuccessfully);
       } catch (err) {
         console.log(err);
         return res.json(ChangeConfirmationEnums.InternalServerError);
@@ -244,8 +232,7 @@ class IdentityService implements IIdentityService {
     }
 
     if (userResponse) {
-      if (!userResponse.identity.isConfirmed)
-        return res.json(LoginEnums.AccountNotConfirmed);
+      if (!userResponse.identity.isConfirmed) return res.json(LoginEnums.AccountNotConfirmed);
 
       if (bcrypt.compareSync(body.password, userResponse.identity.password)) {
         let accessToken = jwt.sign(
@@ -323,15 +310,11 @@ class IdentityService implements IIdentityService {
     }
 
     if (identityResponse) {
-      if (!identityResponse.isConfirmed)
-        return res.json(ResetPasswordEnums.UserNotConfirmed);
+      if (!identityResponse.isConfirmed) return res.json(ResetPasswordEnums.UserNotConfirmed);
 
-      const confirmationEmailSuccess = EmailService.SendResetPasswordEmail(
-        identityResponse
-      );
+      const confirmationEmailSuccess = EmailService.SendResetPasswordEmail(identityResponse);
 
-      if (confirmationEmailSuccess)
-        return res.json(ResetPasswordEnums.ConfirmationEmailSentSuccessfully);
+      if (confirmationEmailSuccess) return res.json(ResetPasswordEnums.ConfirmationEmailSentSuccessfully);
       else return res.json(ResetPasswordEnums.FailedToGenerateToken);
     } else {
       return res.json(ResetPasswordEnums.UserNotFound);
