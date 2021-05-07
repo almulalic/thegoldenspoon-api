@@ -50,7 +50,7 @@
     "ts-node-dev": "^1.0.0-pre.44",
     "typeorm": "0.2.24",
     "typeorm-plus": "0.0.58",
-    "underscore": "^1.10.2",
+    "underscore": "^1.12.1",
     "typescript": "^3.9.9"
   }
 }
